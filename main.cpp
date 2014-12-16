@@ -189,37 +189,11 @@ void main()
 
 	//Creando la Scena
 	MgrCamera->CreateCameras(irrMgr->irrSmgr);
-	MgrCamera->CreateCamerasAux(irrMgr->irrSmgr);
-	MgrCamera->ActiveCameraMaya();
+	//MgrCamera->CreateCamerasAux(irrMgr->irrSmgr);
+	//MgrCamera->ActiveCameraMaya();
 
 	//Inicializo la Scena
 	MgrScene->InitScene(irrMgr->irrDevice);
-
-#ifdef _QUAKE_MODEL_
-	//Load Quake Scene
-	
-	//irrMgr->irrDevice->getFileSystem()->addFileArchive("Media/farm/map-farm_track.b3d");
-	//scene::IAnimatedMesh* mesh = irrMgr->irrSmgr->getMesh("Media/farm/map-farm_track.b3d");
-	////Get Mesh from File
-	//scene::IAnimatedMesh* mesh = smgr->getMesh("20kdm2.bsp");
-	////Add Mesh to Scene
-	//if (mesh)
-	//{
-	//scene::ISceneNode* node = irrMgr->irrSmgr->addOctreeSceneNode(mesh->getMesh(0), 0, -1, 1024);
-	//	//Move Mesh because Not in 0,0,0 Point
-	//	if (node)
-	//		node->setPosition(core::vector3df(-1300,-144,-1249));
-	//}
-
-	//scene::IAnimatedMesh* mesh = irrMgr->irrSmgr->getMesh("Media/farm/cow.b3d");
-
-
-#else
-	//SkyDome
-	/*irrMgr->irrVDriver->setTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS, false);
-	ISceneNode* skydome = irrMgr->irrSmgr->addSkyDomeSceneNode(irrMgr->irrVDriver->getTexture("Media/skydome.jpg"),16,8,0.95f,2.0f);
-	irrMgr->irrVDriver->setTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS, true);*/
-#endif
 
 	irrMgr->irrSmgr->addLightSceneNode(0, core::vector3df(200,200,200),
 		video::SColorf(1.0f,1.0f,1.0f),2000);
@@ -232,9 +206,11 @@ void main()
 	MgrScene->loadModel(&Obj);*/
 
 	while(irrMgr->irrDevice->run() && !irrExit)
+	//while(!irrExit)
 	{
 		//Valido si la Ventana esta en el Foco
-		if(irrMgr->irrDevice->isWindowActive())
+		//if(irrMgr->irrDevice->isWindowActive())
+		if(true)
 		{
 			//Valido la tecla presionada
 			if(appReceiver->isKeyDown(KEY_ESCAPE))

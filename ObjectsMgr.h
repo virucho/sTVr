@@ -60,6 +60,14 @@ public:
 	vector3df getPosition() {return ObjPosition;}
 	vector3df getRotation() {return ObjRotation;}
 	vector3df getScale() {return ObjScale;}
+
+	//Funciones
+	void UpdateCoords(vector3df Position, vector3df Rotation,	vector3df Scale)
+	{
+		ObjPosition = Position;
+		ObjRotation = Rotation;
+		ObjScale = Scale;
+	};
 };
 
 /****************************************************************/
