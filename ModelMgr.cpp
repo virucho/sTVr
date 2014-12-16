@@ -39,8 +39,6 @@ Function InitScene() Init the Class and Load the Irrlicht Device
 */
 bool SceneMgr::InitScene(IrrlichtDevice *irrDevice)
 {
-	//Model = NULL;
-	//SkyBox = NULL;
 	numModels = 0;
 
 	Device = irrDevice;
@@ -147,6 +145,23 @@ bool SceneMgr::loadModel(ObjeScene* Object)
 	IdNames.push_back(Object->getIdName());
 
 	numModels++;
+
+	return true;
+}
+
+bool SceneMgr::UpdateModel(ObjeScene* Object)
+{
+	int x;
+
+	for(x = 0; x < IdNames.size(); x++)
+	{
+		if(Object->getIdName().compare(IdNames[x]) == 0)
+		{
+			Models[x]->setPosition(Object->getPosition());
+			Models[x]->setRotation(Object->getRotation());
+			Models[x]->setScale(Object->getScale());
+		}
+	}
 
 	return true;
 }

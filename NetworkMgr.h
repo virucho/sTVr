@@ -45,11 +45,13 @@ public:
     enum NetworkMode {NW_SERVER, NW_CLIENT, NW_NONE};
 
     // States for the finite state machine. First for server:
-    enum NetworkState {NS_MAIN_MENU,                       // before char sel gui
-                       NS_ACCEPT_CONNECTIONS,				// server: accept connections
-                       NS_MODEL_TO_USE,						// Enviando Modelos usados
-					   NS_MODEL_LOADING,					// Cargando los modelos de la Pista
-					   NS_UPDATING							// Enviando Actializaciones de la Pista
+    enum NetworkState {NS_MAIN_MENU,						// Estado Inicial
+                       NS_CONNECTING,						// Conectadon con el servidor
+					   NS_DATA_LOADING,						// Esperando lista de Modelos a Usar
+                       NS_WORLD_LOADING,					// Esperando Modelo del Mundo
+					   NS_MODEL_LOADING,					// Esperando Modelos variables (Karts)
+					   NS_UPDATING,							// Esperando Actializaciones de la Pista
+					   NS_ENDING_GAME						// Esperendo Fin del Juego
     };
 private:
 

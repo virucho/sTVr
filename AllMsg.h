@@ -49,9 +49,7 @@ public:
 		int LenMsg = 0;
 		LenMsg += getStringLength(Obj->getModelName());
 		LenMsg += getStringLength(Obj->getIdName());
-		LenMsg += 3*getFloatLength();
-		LenMsg += 3*getFloatLength();
-		LenMsg += 3*getFloatLength();
+		LenMsg += 3 * getFloatLength() * 3;
 		
 		allocate(LenMsg);
 		addString(Obj->getModelName());
@@ -69,7 +67,7 @@ public:
 		addFloat(Obj->getScale().Y);
 		addFloat(Obj->getScale().Z);
 	}
-    Msgloadmodel(ENetPacket* pkt): Message(pkt, true)
+    Msgloadmodel(ENetPacket* pkt): Message(pkt)
 	{
 		Object.setModelName(getString());
 		Object.setIdName(getString());
@@ -82,6 +80,8 @@ public:
 	ObjeScene* getObjScene() { return &Object; }
 };   // Msgloadmodel
 
+/***********************************************************************************/
+
 class MsgUpdateObj : public Message
 {
 private:
@@ -93,9 +93,7 @@ public:
 		//Mensaje ID, IdName, 3*Float Position, 3*Float Rotation, 3*Float Scale
 		int LenMsg = 0;
 		LenMsg = getStringLength(Obj->getIdName());
-		LenMsg += 3*getFloatLength();
-		LenMsg += 3*getFloatLength();
-		LenMsg += 3*getFloatLength();
+		LenMsg += 3 * getFloatLength() * 3;
 		
 		allocate(LenMsg);
 		addString(Obj->getIdName());
@@ -112,7 +110,7 @@ public:
 		addFloat(Obj->getScale().Y);
 		addFloat(Obj->getScale().Z);
 	}
-    MsgUpdateObj(ENetPacket* pkt): Message(pkt, true)
+    MsgUpdateObj(ENetPacket* pkt): Message(pkt)
 	{
 		Object.setIdName(getString());
 		Object.setPosition(vector3df(getFloat(), getFloat(), getFloat()));
@@ -123,6 +121,32 @@ public:
 	//Propiedades
 	ObjeScene* getObjScene() { return &Object; }
 };   // MsgUpdateObj
+
+/***********************************************************************************/
+
+class MsgEndLoad : public Message
+{
+private:
+	int NumeroObjetos;
+
+public:
+	MsgEndLoad(int NumObj): Message(Message::MT_END_LOAD)
+	{
+		//Mensaje ID, Numero de Modelos
+		int LenMsg = 0;
+		LenMsg = getIntLength();
+		
+		allocate(LenMsg);
+		addInt(NumObj);
+	}
+    MsgEndLoad(ENetPacket* pkt): Message(pkt)
+	{
+		NumeroObjetos = getInt();
+	}
+
+	//Propiedades
+	int getNumObj() { return NumeroObjetos; }
+};   // MsgEndLoad
 
 /****************************************************************/
 /*                        Global                                */

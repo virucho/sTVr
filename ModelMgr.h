@@ -60,6 +60,7 @@ private:
 public:
 	bool InitScene(IrrlichtDevice *irrDevice);
 	bool loadModel(ObjeScene* Object);
+	bool UpdateModel(ObjeScene* Object);
 
 	//Propiedades
 	int getnumModels() {return numModels;}

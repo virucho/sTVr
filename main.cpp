@@ -178,12 +178,14 @@ void main()
 	if(!MgrHMD->InitHMD())
 		return;
 
+	MgrNetwork->setState(NetworkManager::NS_CONNECTING);
 	if(!MgrNetwork->initClient("localhost", 2305))
 	{
 		printf("Error conectadon");
 		irrMgr->irrDevice->drop();
 		return;
 	}
+	MgrNetwork->setState(NetworkManager::NS_DATA_LOADING);
 
 	//Creando la Scena
 	MgrCamera->CreateCameras(irrMgr->irrSmgr);
@@ -223,7 +225,11 @@ void main()
 		video::SColorf(1.0f,1.0f,1.0f),2000);
 	irrMgr->irrSmgr->setAmbientLight(video::SColorf(0.3f,0.3f,0.3f));
 
-	//MgrScene->loadModel("Media/tracks/farm/farm_track.b3d");
+	MgrNetwork->setState(NetworkManager::NS_WORLD_LOADING);
+
+	/*ObjeScene Obj;
+	Obj.setModelName("Media/tracks/farm/farm_track.b3d");
+	MgrScene->loadModel(&Obj);*/
 
 	while(irrMgr->irrDevice->run() && !irrExit)
 	{

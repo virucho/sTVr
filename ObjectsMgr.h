@@ -48,7 +48,7 @@ private:
 	vector3df ObjScale;
 
 public:
-	ObjeScene() {IdName = "NONE";};
+	ObjeScene() {IdName = "NONE"; ObjScale = vector3df(1.0f, 1.0f, 1.0f);};
 
 	void setModelName(std::string Name) {ModelName = Name;}
 	void setIdName(std::string Id) {IdName = Id;}

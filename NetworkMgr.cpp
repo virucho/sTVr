@@ -32,18 +32,18 @@ NetworkManager* MgrNetwork = 0;
 
 NetworkManager::NetworkManager()
 {
-     m_mode           = NW_NONE;
-     m_state          = NS_MODEL_LOADING;
-     m_host           = NULL;
+	m_mode           = NW_CLIENT;
+    m_state          = NS_MAIN_MENU;
+    m_host           = NULL;
 
-     m_num_clients    = 0;
-     m_host_id        = 0;
+    m_num_clients    = 0;
+    m_host_id        = 0;
 
-     if (enet_initialize () != 0)
-     {
-      fprintf (stderr, "An error occurred while initializing ENet.\n");
-      exit(-1);
-     }
+    if (enet_initialize () != 0)
+    {
+    fprintf (stderr, "An error occurred while initializing ENet.\n");
+    exit(-1);
+    }
 }   // NetworkManager
 
 NetworkManager::~NetworkManager()
@@ -136,113 +136,38 @@ bool NetworkManager::initClient(const char* hostName, int portHost)
 
 void NetworkManager::handleMessageAtClient(ENetEvent *event)
 {
-	Message MsgRec(event->packet, false);
+	Message::MessageType TypeMsg;
+	
+	TypeMsg = Message::getPeekType(event->packet);
 
-	switch(MsgRec.getType())
+	switch(TypeMsg)
 	{
 	case Message::MT_LOADMODEL:
-		if(m_state == NS_MODEL_LOADING)
+		if(m_state == NS_WORLD_LOADING)
 		{
 			Msgloadmodel m(event->packet);
 			MgrScene->loadModel(m.getObjScene());
-			//m_state = NS_UPDATING;
+		}
+		else if(m_state == NS_MODEL_LOADING)
+		{
+			Msgloadmodel m(event->packet);
+			MgrScene->loadModel(m.getObjScene());
 		}
 		break;
+	case Message::MT_OBJS_UPDATE:
+		if(m_state == NS_UPDATING)
+		{
+			MsgUpdateObj m(event->packet);
+			MgrScene->UpdateModel(m.getObjScene());
+		}
+		break;
+	case Message::MT_END_LOAD:
+		if(m_state == NS_WORLD_LOADING)
+			m_state = NS_MODEL_LOADING;
+		else if(m_state == NS_MODEL_LOADING)
+			m_state = NS_UPDATING;
+
+		break;
 	}
-
-	MsgRec.clear();
-
-
-//    switch(m_state)
-//    {
-//    case NS_WAIT_FOR_AVAILABLE_CHARACTERS:
-//        {
-//            CharacterInfoMessage m(event->packet);
-//            // FIXME: handle list of available characters
-//            m_state = NS_CHARACTER_SELECT;
-//            break;
-//        }
-//    case NS_CHARACTER_SELECT:
-//        {
-//            CharacterConfirmMessage m(event->packet);
-//            kart_properties_manager->selectKartName(m.getKartName());
-//            // TODO - karts selection screen in networking
-//            /*
-//            CharSel *menu = dynamic_cast<CharSel*>(menu_manager->getCurrentMenu());
-//            if(menu)
-//                menu->updateAvailableCharacters();
-//             */
-//            break;
-//        }
-//    case NS_WAIT_FOR_KART_CONFIRMATION:
-//        {
-//            CharacterConfirmMessage m(event->packet);
-//            kart_properties_manager->selectKartName(m.getKartName());
-//
-//            // If the current menu is the character selection menu,
-//            // update the menu so that the newly taken character is removed.
-//            // TODO - kart selection screen and networking
-//            /*
-//            CharSel *menu = dynamic_cast<CharSel*>(menu_manager->getCurrentMenu());
-//            if(menu)
-//                menu->updateAvailableCharacters();*/
-//            // Check if we received a message about the kart we just selected.
-//            // If so, the menu needs to progress, otherwise a different kart
-//            // must be selected by the current player.
-//            if(m.getKartName()==m_kart_to_confirm)
-//            {
-//                int host_id = m.getHostId();
-//                m_state = (host_id == getMyHostId()) ? NS_KART_CONFIRMED
-//                                                     : NS_CHARACTER_SELECT;
-//            }   // m.getkartName()==m_kart_to_confirm
-//            break;
-//        }   // wait for kart confirmation
-//    case NS_WAIT_FOR_RACE_DATA:
-//        {
-//            // It is possible that character confirm messages arrive at the
-//            // client when it has already left the character selection screen.
-//            // In this case the messages can simply be ignored.
-//            if(Message::peekType(event->packet)==Message::MT_CHARACTER_CONFIRM)
-//            {
-//                // Receiving it will automatically free the memory.
-//                CharacterConfirmMessage m(event->packet);
-//                return;
-//            }
-//            RaceInfoMessage m(event->packet);
-//            // The constructor actually sets the information in the race manager
-//            m_state = NS_LOADING_WORLD;
-//            break;
-//        }
-//    case NS_READY_SET_GO_BARRIER:
-//        {
-//            // Not actually needed, but the destructor of RaceStartMessage
-//            // will free the memory of the event.
-//            RaceStartMessage m(event->packet);
-//            m_state = NS_RACING;
-//            break;
-//        }
-//    case NS_RACING:
-//        {
-//            assert(false);  // should never be here while racing
-//            break;
-//        }
-//    case NS_RACE_RESULT_BARRIER:
-//        {
-//            RaceResultAckMessage message(event->packet);
-//            // TODO - race results menu in networking
-//            /*
-//            RaceResultsGUI *menu = dynamic_cast<RaceResultsGUI*>(menu_manager->getCurrentMenu());
-//            if(menu)
-//                menu->setSelectedWidget(message.getSelectedMenu());*/
-//            m_state = NS_RACE_RESULT_BARRIER_OVER;
-//            break;
-//        }
-//    default:
-//        {
-//            printf("received unknown message: type %d\n",
-//                Message::peekType(event->packet));
-//         //   assert(0);   // should not happen
-//        }
-//    }   // switch m_state
 }   // handleMessageAtClient
 

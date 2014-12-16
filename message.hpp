@@ -46,9 +46,10 @@ public:
     /** Contains all tags used in identifying a message. */
     enum MessageType {
 						MT_CONNECT=1,
-						MT_LOADMODEL,
 						MT_USE_MODELS,
-						MT_OBJS_UPDATE
+						MT_LOADMODEL,
+						MT_OBJS_UPDATE,
+						MT_END_LOAD
                      };
 private:
     ENetPacket  *m_pkt;
@@ -60,10 +61,10 @@ private:
 
 public:
 	Message(MessageType m);
-	Message(ENetPacket *pkt, bool destroy);
+	Message(ENetPacket *pkt);
 	~Message();
 
-    void receive(ENetPacket *pkt, bool destroy);          
+    void receive(ENetPacket *pkt);          
     void clear();
     void allocate(int size);
 
@@ -78,12 +79,21 @@ public:
 	void         addStringVector(const std::vector<std::string>& vs);
 	std::vector<std::string>	getStringVector();
 
+	//Propiedades
     MessageType  getType() const   { return m_type; }
     ENetPacket*  getPacket() const { assert(m_data_size>-1); return m_pkt;   }
 
+	//Retorno de Tipos de Datos
+	static int   getIntLength()             { return sizeof(int);     }
+    static int   getUIntLength()            { return sizeof(int);     }
+    static int   getShortLength()           { return sizeof(short);   }
+    static int   getCharLength()            { return sizeof(char);    }
+    static int   getBoolLength()            { return sizeof(char);    }
+    static int   getFloatLength()           { return sizeof(float);   }
+    static int   getStringLength(const std::string& s) { return s.size()+1;}
+    static int   getStringVectorLength(const std::vector<std::string>& vs);
 
-
-    
+	//Datos extras    
     void         addUInt(unsigned int data)      { addInt(*(int*)&data);  }
     void         addBool(bool data)              { addChar(data?1:0);     }
     void         addChar(char data)              { addCharArray((char*)&data,1);}
@@ -102,20 +112,11 @@ public:
     void         getCharArray(char *c, int n=1) {memcpy(c,m_data+m_pos,n);
                                                   m_pos+=n;
                                                   return;                 }
-    static int   getIntLength()             { return sizeof(int);     }
-    static int   getUIntLength()            { return sizeof(int);     }
-    static int   getShortLength()           { return sizeof(short);   }
-    static int   getCharLength()            { return sizeof(char);    }
-    static int   getBoolLength()            { return sizeof(char);    }
-    static int   getFloatLength()           { return sizeof(float);   }
-    static int   getStringLength(const std::string& s) { return s.size()+1;}
-    static int   getStringVectorLength(const std::vector<std::string>& vs);
 
 public:
                  
     /** Return the type of a message without unserialising the message */
-    static MessageType peekType(ENetPacket *pkt)
-                                   { return (MessageType)pkt->data[0];}
+    static MessageType getPeekType(ENetPacket *pkt) {return (MessageType)pkt->data[0];}
 
 };   // Message
 

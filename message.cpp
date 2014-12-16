@@ -46,9 +46,9 @@ Message::Message(MessageType type)
  *  \param m   The type of the message. The type is checked via an assert!
  */
 
-Message::Message(ENetPacket* pkt, bool destroy)
+Message::Message(ENetPacket* pkt)
 {
-    receive(pkt, destroy);
+    receive(pkt);
 }
 
 // ----------------------------------------------------------------------------
@@ -57,7 +57,7 @@ Message::Message(ENetPacket* pkt, bool destroy)
  *  \param pkt The ENetPacket
  *  \param m   The type of the message. The type is checked via an assert!
  */
-void Message::receive(ENetPacket* pkt, bool destroy)
+void Message::receive(ENetPacket* pkt)
 {
     assert(sizeof(int)==4);
 
@@ -66,7 +66,7 @@ void Message::receive(ENetPacket* pkt, bool destroy)
     m_data          = (char*)pkt->data;
     m_type          = (MessageType)m_data[0];
     m_pos           = 1;
-    m_needs_destroy = destroy;
+    m_needs_destroy = true;
 }  // Message
 
 // ----------------------------------------------------------------------------
@@ -84,7 +84,7 @@ Message::~Message()
 void Message::clear()
 {
     if(m_needs_destroy)
-		enet_packet_destroy(m_pkt);
+        enet_packet_destroy(m_pkt);
 }   // clear
 
 // ----------------------------------------------------------------------------
