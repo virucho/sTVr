@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<!-- Generated with script from SVN rev 14445 -->
+<scene>
+  <track model="jungle_track.b3d" x="0" y="0" z="0">
+    <animated-texture name="zipper_jungle.png" dy="0.500" />
+    <animated-texture name="zipper_jungle.png" dy="0.500" />
+    <animated-texture name="ants.png" dy="0.500" />
+    <animated-texture name="ants.png" dy="0.500" />
+    <animated-texture name="water_light.png" dy="0.100" />
+    <animated-texture name="water_light.png" dy="0.100" />
+  </track>
+  <sky-color rgb="77 104 255"/>
+  <sky-box texture="skybox5.jpg skybox5.jpg skybox4.jpg skybox2.jpg skybox3.jpg skybox1.jpg"/>
+  <camera far="1000.0"/>
+  <checks>
+    <check-lap kind="lap" same-group="0" other-ids="1" />
+    <check-line kind="activate" other-ids="0" p1="345.37 -112.02" p2="271.36 -109.41"
+                min-height="15.37" same-group="1"/>
+  </checks>
+  <particle-emitter kind="fire.xml" xyz="-30.40 13.25 -163.04" h="0.00" clip_distance="200">
+  </particle-emitter>
+  <particle-emitter kind="fire.xml" xyz="-9.87 13.25 -162.39" h="0.00" clip_distance="200">
+  </particle-emitter>
+  <particle-emitter kind="fire.xml" xyz="-9.20 13.25 -141.48" h="-8.14" clip_distance="200">
+  </particle-emitter>
+  <particle-emitter kind="fire.xml" xyz="-29.62 12.85 -138.89" h="-8.14" clip_distance="200">
+  </particle-emitter>
+  <particle-emitter kind="fire.xml" xyz="-27.87 13.25 -182.01" h="4.55" clip_distance="200">
+  </particle-emitter>
+  <particle-emitter kind="fire.xml" xyz="-7.45 13.25 -179.73" h="4.55" clip_distance="200">
+  </particle-emitter>
+  <particle-emitter kind="fire.xml" xyz="-43.61 13.25 -223.75" h="4.55" clip_distance="200">
+  </particle-emitter>
+  <particle-emitter kind="fire.xml" xyz="-52.80 12.89 -182.66" h="4.55" clip_distance="200">
+  </particle-emitter>
+  <particle-emitter kind="fire.xml" xyz="-52.61 12.20 -136.07" h="4.55" clip_distance="200">
+  </particle-emitter>
+  <particle-emitter kind="fire.xml" xyz="-52.80 12.53 -162.55" h="4.55" clip_distance="200">
+  </particle-emitter>
+  <particle-emitter kind="fire.xml" xyz="-48.93 12.41 -203.65" h="4.55" clip_distance="200">
+  </particle-emitter>
+  <banana x="-17.05" y="12.00" z="-297.33" />
+  <banana x="139.89" y="14.49" z="-290.34" />
+  <banana x="62.07" y="5.96" z="-245.26" />
+  <banana x="82.50" y="4.74" z="-231.17" />
+  <banana x="100.92" y="6.10" z="-224.72" />
+  <banana x="197.06" y="13.10" z="-266.43" />
+  <banana x="210.61" y="12.73" z="-246.42" />
+  <banana x="222.23" y="12.29" z="-243.02" />
+  <banana x="234.97" y="12.29" z="-233.35" />
+  <banana x="270.36" y="11.03" z="-202.58" />
+  <banana x="122.16" y="14.73" z="-300.91" />
+  <item x="298.70" y="12.55" z="-178.22" />
+  <item x="251.46" y="11.73" z="-216.32" h="31.49" />
+  <item x="254.29" y="11.73" z="-219.96" h="31.49" />
+  <item x="307.34" y="14.14" z="-151.67" />
+  <item x="310.21" y="14.37" z="-126.69" />
+  <item x="212.06" y="9.04" z="-207.01" h="-58.96" />
+  <item x="173.31" y="13.24" z="-274.67" />
+  <item x="102.35" y="15.50" z="-308.59" />
+  <item x="209.99" y="9.04" z="-204.80" h="-58.96" />
+  <item x="214.73" y="9.04" z="-209.35" h="-58.96" />
+  <item x="176.13" y="8.61" z="-221.63" />
+  <item x="117.97" y="9.83" z="43.01" />
+  <item x="121.52" y="9.83" z="39.95" />
+  <small-nitro x="240.95" y="12.78" z="-1.86" />
+  <small-nitro x="248.50" y="15.88" z="-33.32" />
+  <small-nitro x="261.75" y="16.28" z="-40.09" />
+  <small-nitro x="248.42" y="15.88" z="-16.51" />
+  <small-nitro x="294.10" y="16.53" z="-60.21" />
+  <small-nitro x="291.35" y="16.68" z="-71.72" />
+  <small-nitro x="308.08" y="16.88" z="-79.43" />
+  <small-nitro x="-10.33" y="12.84" z="-313.08" />
+  <small-nitro x="7.90" y="13.81" z="-318.98" />
+  <small-nitro x="25.39" y="15.19" z="-336.48" />
+  <small-nitro x="57.07" y="15.11" z="-323.41" />
+  <small-nitro x="78.10" y="13.82" z="-322.69" />
+  <default-start karts-per-row     ="2"
+                 forwards-distance ="1.50"
+                 sidewards-distance="3.00"
+                 upwards-distance  ="0.00"/>
+</scene>
