@@ -16,8 +16,8 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#ifndef HEADER_MESSAGE_HPP
-#define HEADER_MESSAGE_HPP
+#ifndef HEADER_MESSAGEMGR_HPP
+#define HEADER_MESSAGEMGR_HPP
 
 #include <cstring>
 #include <string>
@@ -40,12 +40,13 @@ using std::memcpy;
  *  floats are converted via a byte swap, too - so it must be guaranteed
  *  that the float representation between all machines is identical).
  */
-class Message
+class STVRMessage
 {
 public:
     /** Contains all tags used in identifying a message. */
     enum MessageType {
 						MT_CONNECT=1,
+						MT_GAME_NAME,
 						MT_USE_MODELS,
 						MT_LOADMODEL,
 						MT_OBJS_UPDATE,
@@ -60,9 +61,9 @@ private:
     bool         m_needs_destroy;			// only received messages need to be destroyed
 
 public:
-	Message(MessageType m);
-	Message(ENetPacket *pkt);
-	~Message();
+	STVRMessage(MessageType m);
+	STVRMessage(ENetPacket *pkt);
+	~STVRMessage();
 
     void receive(ENetPacket *pkt);          
     void clear();

@@ -7,7 +7,13 @@
  *					Irrlicht 1.8
  *                  IrrEdit 4.5
  *					DirectX 9
+ *					Enet 1.3.12 - Network Library
  * Viel Dank guys
+ * ===================================================================================
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
  * ===================================================================================
  * Authors:  Luis Rojas (luis-alejandro.rojas-vargas@tu-ilmenau.de) 
  *************************************************************************************/

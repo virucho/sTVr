@@ -18,6 +18,7 @@
 //#define _WINSOCKAPI_		//Alguien esta cargando Winsock, por eso esto elimina las def
 
 #define INT_FULLSCRENN false
+#define STVR_VERSION 0.3f
 
 #define _DEFAULT_STEP_ 0.5f
 
@@ -160,7 +161,7 @@ void InitReset()
 /*                        Main                                  */
 /****************************************************************/
 
-void main()
+int main(int argc, char *argv[] )
 {
 	//Instancia Evento Presion de Tecla
 	CAppReciever* appReceiver = new CAppReciever();
@@ -168,24 +169,24 @@ void main()
 	int lastFPS = -1;
 	int fps = -1;
 
+	printf("Starting sTVr Version : %f\n", STVR_VERSION);
 	core::stringw strName = L"Streaming Virtual reality sTVr";
 	
 	InitReset();
 	
 	if(!irrMgr->InitIrrlicht(appReceiver))
-		return;
+		return false;
 	
 	if(!MgrHMD->InitHMD())
-		return;
+		return false;
 
 	MgrNetwork->setState(NetworkManager::NS_CONNECTING);
 	if(!MgrNetwork->initClient("localhost", 2305))
 	{
 		printf("Error conectadon");
 		irrMgr->irrDevice->drop();
-		return;
+		return false;
 	}
-	MgrNetwork->setState(NetworkManager::NS_DATA_LOADING);
 
 	//Creando la Scena
 	MgrCamera->CreateCameras(irrMgr->irrSmgr);
@@ -193,7 +194,7 @@ void main()
 	//MgrCamera->ActiveCameraMaya();
 
 	//Inicializo la Scena
-	MgrScene->InitScene(irrMgr->irrDevice);
+	MgrScene->InitSceneMgr(irrMgr->irrDevice);
 
 	irrMgr->irrSmgr->addLightSceneNode(0, core::vector3df(200,200,200),
 		video::SColorf(1.0f,1.0f,1.0f),2000);
@@ -279,7 +280,8 @@ void main()
 			{
 				strName = L"MedienProjekt - IrrlichtVR [FPS: ";
 				strName += fps;
-				strName += "]";
+				strName += "] - ";
+				strName += MgrNetwork->getState();
 
 				irrMgr->irrDevice->setWindowCaption(strName.c_str());
 				lastFPS = fps;
@@ -296,5 +298,5 @@ void main()
 		MgrHMD->VRTracker->iWearDispose();
 #endif
 
-	return;
+	return true;
 }

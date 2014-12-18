@@ -23,7 +23,7 @@
 /*                        Include                               */
 /****************************************************************/
 
-#include "message.hpp"
+#include "MessageMgr.h"
 #include "ObjectsMgr.h"
 
 #include <string>
@@ -37,22 +37,24 @@
 /*                       Class									*/
 /****************************************************************/
 
-class Msgloadmodel : public Message
+class Msgloadmodel : public STVRMessage
 {
 private:
 	ObjeScene Object;
 
 public:
-	Msgloadmodel(ObjeScene* Obj): Message(Message::MT_LOADMODEL)
+	Msgloadmodel(ObjeScene* Obj): STVRMessage(STVRMessage::MT_LOADMODEL)
 	{
-		//Mensaje ID, Nombre, IdName, 3*Float Position, 3*Float Rotation, 3*Float Scale
+		//Mensaje ID, Nombre, Address Folder, IdName, 3*Float Position, 3*Float Rotation, 3*Float Scale
 		int LenMsg = 0;
 		LenMsg += getStringLength(Obj->getModelName());
+		LenMsg += getStringLength(Obj->getAddfolder());
 		LenMsg += getStringLength(Obj->getIdName());
 		LenMsg += 3 * getFloatLength() * 3;
 		
 		allocate(LenMsg);
 		addString(Obj->getModelName());
+		addString(Obj->getAddfolder());
 		addString(Obj->getIdName());
 
 		addFloat(Obj->getPosition().X);
@@ -67,9 +69,10 @@ public:
 		addFloat(Obj->getScale().Y);
 		addFloat(Obj->getScale().Z);
 	}
-    Msgloadmodel(ENetPacket* pkt): Message(pkt)
+    Msgloadmodel(ENetPacket* pkt): STVRMessage(pkt)
 	{
 		Object.setModelName(getString());
+		Object.setAddFolder(getString());
 		Object.setIdName(getString());
 		Object.setPosition(vector3df(getFloat(), getFloat(), getFloat()));
 		Object.setRotation(vector3df(getFloat(), getFloat(), getFloat()));
@@ -82,13 +85,13 @@ public:
 
 /***********************************************************************************/
 
-class MsgUpdateObj : public Message
+class MsgUpdateObj : public STVRMessage
 {
 private:
 	ObjeScene Object;
 
 public:
-	MsgUpdateObj(ObjeScene* Obj): Message(Message::MT_OBJS_UPDATE)
+	MsgUpdateObj(ObjeScene* Obj): STVRMessage(STVRMessage::MT_OBJS_UPDATE)
 	{
 		//Mensaje ID, IdName, 3*Float Position, 3*Float Rotation, 3*Float Scale
 		int LenMsg = 0;
@@ -110,7 +113,7 @@ public:
 		addFloat(Obj->getScale().Y);
 		addFloat(Obj->getScale().Z);
 	}
-    MsgUpdateObj(ENetPacket* pkt): Message(pkt)
+    MsgUpdateObj(ENetPacket* pkt): STVRMessage(pkt)
 	{
 		Object.setIdName(getString());
 		Object.setPosition(vector3df(getFloat(), getFloat(), getFloat()));
@@ -124,13 +127,13 @@ public:
 
 /***********************************************************************************/
 
-class MsgEndLoad : public Message
+class MsgEndLoad : public STVRMessage
 {
 private:
 	int NumeroObjetos;
 
 public:
-	MsgEndLoad(int NumObj): Message(Message::MT_END_LOAD)
+	MsgEndLoad(int NumObj): STVRMessage(STVRMessage::MT_END_LOAD)
 	{
 		//Mensaje ID, Numero de Modelos
 		int LenMsg = 0;
@@ -139,7 +142,7 @@ public:
 		allocate(LenMsg);
 		addInt(NumObj);
 	}
-    MsgEndLoad(ENetPacket* pkt): Message(pkt)
+    MsgEndLoad(ENetPacket* pkt): STVRMessage(pkt)
 	{
 		NumeroObjetos = getInt();
 	}
@@ -147,6 +150,37 @@ public:
 	//Propiedades
 	int getNumObj() { return NumeroObjetos; }
 };   // MsgEndLoad
+
+/***********************************************************************************/
+
+class MsgGameName : public STVRMessage
+{
+private:
+	std::string GameName;
+	int IdClient;
+
+public:
+	MsgGameName(std::string Name, int Id): STVRMessage(STVRMessage::MT_GAME_NAME)
+	{
+		//Mensaje ID, Game Name
+		int LenMsg = 0;
+		LenMsg = LenMsg = getStringLength(Name) + getIntLength();
+		
+		allocate(LenMsg);
+
+		addString(Name);
+		addInt(Id);
+	}
+    MsgGameName(ENetPacket* pkt): STVRMessage(pkt)
+	{
+		GameName = getString();
+		IdClient = getInt();
+	}
+
+	//Propiedades
+	std::string getGameName() { return GameName; }
+	int getIdClient() { return IdClient; }
+};   // MsgGameName
 
 /****************************************************************/
 /*                        Global                                */

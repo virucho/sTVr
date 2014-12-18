@@ -44,26 +44,43 @@ using namespace io;
 /*                       Class									*/
 /****************************************************************/
 
+struct ModelinScene
+{
+	ISceneNode* Model;							// Node of the loaded Model
+	IAnimatedMesh* Mesh;						// Mesh of the loaded Model
+	ObjeScene* Object;							// Data from oBject in scene
+	bool inScene;								// say if the Model is render in the scene
+	bool Octree;								// If the model use Octree or Not
+};
+
 class SceneMgr
 {
 private:
-	std::vector<ISceneNode*> Models;
-	std::vector<std::string> IdNames;
-	int numModels;
-
+	// Driver
 	IrrlichtDevice * Device;
 
-	stringw Caption;
+	// Models
+	std::vector<ModelinScene> Models;			// vector with all Models and characteristics
+
+	// Files manager
+	std::string RootFolder;
+
+	// Scene Manager
 	bool Octree;
 	bool UseLight;
 
+	stringw Caption;
+
 public:
-	bool InitScene(IrrlichtDevice *irrDevice);
+	bool InitSceneMgr(IrrlichtDevice *irrDevice);
+	bool InitWorld();
 	bool loadModel(ObjeScene* Object);
 	bool UpdateModel(ObjeScene* Object);
 
 	//Propiedades
-	int getnumModels() {return numModels;}
+	int getnumModels() {return Models.size();}
+	void setRootfolder(std::string folder)				{RootFolder = folder + "/";}
+	std::string getRootfolder()							{return RootFolder;}
 };
 
 /****************************************************************/

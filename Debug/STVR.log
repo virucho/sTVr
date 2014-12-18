@@ -1,16 +1,15 @@
-﻿Build started 16.12.2014 23:17:47.
+﻿Build started 18.12.2014 18:15:37.
      1>Project "C:\Users\luisalejandro\Documents\Visual Studio 2012\Projects\STVR\STVR\STVR.vcxproj" on node 2 (Rebuild target(s)).
      1>_PrepareForClean:
          Deleting file "Debug\STVR.lastbuildstate".
        InitializeBuildStatus:
          Creating "Debug\STVR.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt CameraMgr.cpp InputHMD.cpp IrrlichtMgr.cpp IWear_Tracking.cpp main.cpp message.cpp ModelMgr.cpp NetworkMgr.cpp Standard.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt CameraMgr.cpp InputHMD.cpp IrrlichtMgr.cpp IWear_Tracking.cpp main.cpp MessageMgr.cpp ModelMgr.cpp NetworkMgr.cpp Standard.cpp
          Standard.cpp
          NetworkMgr.cpp
          ModelMgr.cpp
-     1>c:\users\luisalejandro\documents\visual studio 2012\projects\stvr\stvr\modelmgr.cpp(156): warning C4018: '<' : signed/unsigned mismatch
-         message.cpp
+         MessageMgr.cpp
          main.cpp
          IWear_Tracking.cpp
          IrrlichtMgr.cpp
@@ -23,7 +22,7 @@
          Debug\IrrlichtMgr.obj
          Debug\IWear_Tracking.obj
          Debug\main.obj
-         Debug\message.obj
+         Debug\MessageMgr.obj
          Debug\ModelMgr.obj
          Debug\NetworkMgr.obj
          Debug\Standard.obj
@@ -36,4 +35,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:13.44
+Time Elapsed 00:00:13.61

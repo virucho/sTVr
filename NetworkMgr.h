@@ -24,7 +24,7 @@
 /****************************************************************/
 
 #include "enet/enet.h"
-#include "message.hpp"
+#include "MessageMgr.h"
 #include "AllMsg.h"
 
 #include <string>
@@ -55,62 +55,31 @@ public:
     };
 private:
 
-    NetworkMode                 m_mode;
+    bool						m_active;
+	std::string					m_Gamename;					// Nombre del juego para Instanciar
     NetworkState                m_state;
-    unsigned int                m_num_clients;
-    int                         m_host_id;
-
-    ENetHost                   *m_host;    // me
-    ENetPeer                   *m_server;  // (clients only)
-    std::vector<ENetPeer*>      m_clients; // (server only) pos in vector is client host_id
-
-    
-
-    void         handleNewConnection(ENetEvent *event);
-    void         handleMessageAtServer(ENetEvent *event);
-    void         handleMessageAtClient(ENetEvent *event);
-    void         handleDisconnection(ENetEvent *event);
-
-    // the first cast to long avoid compiler errors on 64 bit systems
-    // about lost precision, then cast long to int to get the right type
-    /*unsigned int getHostId(ENetPeer *p) const {return (int)(long)p->data; }
-
-    void         sendToServer(Message &m);
-    void         broadcastToClients(Message &m);*/
+	ENetHost*                   m_host;						// Client
+    int                         m_client_id;
+    ENetPeer*                   m_server;					// Connection to Server
 
 public:
-                 NetworkManager();
-                ~NetworkManager();
-	bool         initClient(const char* hostName, int portHost);
+	NetworkManager();
+	~NetworkManager();
 
-    void         setMode(NetworkMode m)            {m_mode = m;              }
-    NetworkMode  getMode() const                   {return m_mode;           }
-    void         becomeServer();
-    void         becomeClient();
-    void         setState(NetworkState s)          {m_state = s;             }
-    NetworkState getState() const                  {return m_state;          }
-    int          getMyHostId() const               {return m_host_id;        }
-    void         setHostId(int host_id)            {m_host_id = host_id;     }
-    unsigned int getNumClients() const             {return m_num_clients;    }
-
-    bool         initialiseConnections();
-    void         update(float dt);
-
-    void         disableNetworking();
-    void         sendConnectMessage();  // client send initial info to server
-    void         initCharacterDataStructures();
-    void         sendCharacterSelected(int player_id, const std::string &kartid);
-    void         waitForRaceInformation();
-    void         worldLoaded();
-    void         setupPlayerKartInfo();
-    void         beginReadySetGoBarrier();
-    void         sendRaceInformationToClients();
-    void         sendUpdates();
-    void         receiveUpdates();
-    void         waitForClientData();
-    void         sendRaceResults();
-    void         beginRaceResultBarrier();
-    void         sendRaceResultAck(char menu_selection=-1);
+	//Properties
+	void         setState(NetworkState s)			{m_state = s;			}
+	NetworkState getState() const					{return m_state;		}
+	void Active_sTVr()								{m_active = true;		}
+	void setGamename(std::string name)				{m_Gamename = name;		}
+	int          getMyClientId() const				{return m_client_id;	}
+    void         setClientId(int host_id)			{m_client_id = host_id;	}
+           
+	void update(float dt);
+	bool initClient(const char* hostName, int portHost);
+	void sendToServer(STVRMessage &m);
+	void handleMessagefromServer(ENetEvent *event);
+	void handleDisconnection(ENetEvent *inevent);
+    void disableNetworking();
 };
 
 

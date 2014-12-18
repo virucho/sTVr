@@ -39,7 +39,7 @@
     <ClCompile Include="NetworkMgr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="message.cpp">
+    <ClCompile Include="MessageMgr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -68,10 +68,10 @@
     <ClInclude Include="AllMsg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="message.hpp">
+    <ClInclude Include="ObjectsMgr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ObjectsMgr.h">
+    <ClInclude Include="MessageMgr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

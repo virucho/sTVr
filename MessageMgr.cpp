@@ -16,7 +16,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#include "message.hpp"
+#include "MessageMgr.h"
 
 #include <string>
 #include <math.h>
@@ -28,7 +28,7 @@
  *  A call to allocate() is therefore necessary.
  *  \param type  The type of the message
  */
-Message::Message(MessageType type)
+STVRMessage::STVRMessage(MessageType type)
 {
     assert(sizeof(int)==4);		//Garantizar el tamaño del int
 
@@ -46,7 +46,7 @@ Message::Message(MessageType type)
  *  \param m   The type of the message. The type is checked via an assert!
  */
 
-Message::Message(ENetPacket* pkt)
+STVRMessage::STVRMessage(ENetPacket* pkt)
 {
     receive(pkt);
 }
@@ -57,7 +57,7 @@ Message::Message(ENetPacket* pkt)
  *  \param pkt The ENetPacket
  *  \param m   The type of the message. The type is checked via an assert!
  */
-void Message::receive(ENetPacket* pkt)
+void STVRMessage::receive(ENetPacket* pkt)
 {
     assert(sizeof(int)==4);
 
@@ -71,7 +71,7 @@ void Message::receive(ENetPacket* pkt)
 
 // ----------------------------------------------------------------------------
 /** Frees the memory allocated for this message. */
-Message::~Message()
+STVRMessage::~STVRMessage()
 {
     clear();
 }   // ~Message
@@ -81,7 +81,7 @@ Message::~Message()
  *  Calls enet_packet_destroy if necessary (i.e. if the message was received).
  *  The memory for a message created to be sent does not need to be freed, it
  *  is handled by enet. */
-void Message::clear()
+void STVRMessage::clear()
 {
     if(m_needs_destroy)
         enet_packet_destroy(m_pkt);
@@ -91,7 +91,7 @@ void Message::clear()
 /** Reserves the memory for a message.
  *  \param size Number of bytes to reserve.
  */
-void Message::allocate(int size)
+void STVRMessage::allocate(int size)
 {
     m_data_size = size+1;
     m_pkt       = enet_packet_create (NULL, m_data_size, ENET_PACKET_FLAG_RELIABLE);
@@ -104,7 +104,7 @@ void Message::allocate(int size)
 /** Adds an integer value to the message.
  *  \param data The integer value to add.
  */
-void Message::addInt(int data)
+void STVRMessage::addInt(int data)
 {
     assert((int)(m_pos + sizeof(int)) <= m_data_size);
     int l=htonl(data);
@@ -116,7 +116,7 @@ void Message::addInt(int data)
 /** Extracts an integer value from a message.
  *  \return The extracted integer.
  */
-int Message::getInt()
+int STVRMessage::getInt()
 {
     m_pos+=sizeof(int);
     return ntohl(*(int*)(&m_data[m_pos-sizeof(int)]));
@@ -126,7 +126,7 @@ int Message::getInt()
 /** Adds a short value to the message.
  *  \param data The integer value to add.
  */
-void Message::addShort(short data)
+void STVRMessage::addShort(short data)
 {
     assert((int)(m_pos + sizeof(short)) <= m_data_size);
     int l=htons(data);
@@ -138,7 +138,7 @@ void Message::addShort(short data)
 /** Extracts a short value from a message.
  *  \return The short value.
  */
-short Message::getShort()
+short STVRMessage::getShort()
 {
     m_pos+=sizeof(short);
     return ntohs(*(short*)(&m_data[m_pos-sizeof(short)]));
@@ -148,7 +148,7 @@ short Message::getShort()
 /** Adds a floating point value to the message.
  *  \param data Floating point value to add.
  */
-void Message::addFloat(const float data)
+void STVRMessage::addFloat(const float data)
 {
     // The simple approach of using  addInt(*(int*)&data)
     // does not work (at least with optimisation on certain g++ versions,
@@ -158,7 +158,7 @@ void Message::addFloat(const float data)
     addInt(n);
 }   // addFloat
 // ----------------------------------------------------------------------------
-float Message::getFloat()
+float STVRMessage::getFloat()
 {
     int i    = getInt();
     float f;
@@ -172,7 +172,7 @@ float Message::getFloat()
 }   // getFloat
 
 // ----------------------------------------------------------------------------
-void Message::addString(const std::string &data)
+void STVRMessage::addString(const std::string &data)
 {
     int len = data.size()+1;  // copy 0 end byte
     assert((int)(m_pos+len) <=m_data_size);
@@ -181,7 +181,7 @@ void Message::addString(const std::string &data)
 }   // addString
 
 // ----------------------------------------------------------------------------
-std::string Message::getString()
+std::string STVRMessage::getString()
 {
     char *str = (char*) &(m_data[m_pos]);
     int len = strlen(str)+1;
@@ -193,7 +193,7 @@ std::string Message::getString()
 /** Returns the number of bytes necessary to store a string vector.
  *  \param vs std::vector<std::string>
  */
-int Message::getStringVectorLength(const std::vector<std::string>& vs)
+int STVRMessage::getStringVectorLength(const std::vector<std::string>& vs)
 {
     int len=getShortLength();
     for(unsigned int i=0; i<vs.size(); i++)
@@ -204,7 +204,7 @@ int Message::getStringVectorLength(const std::vector<std::string>& vs)
 // ----------------------------------------------------------------------------
 /** Adds a std::vector<std::string> to the message.
  */
-void Message::addStringVector(const std::vector<std::string>& vs)
+void STVRMessage::addStringVector(const std::vector<std::string>& vs)
 {
     assert(vs.size()<32767);
     addShort(vs.size());
@@ -213,7 +213,7 @@ void Message::addStringVector(const std::vector<std::string>& vs)
 }   // addStringVector
 
 // ----------------------------------------------------------------------------
-std::vector<std::string> Message::getStringVector()
+std::vector<std::string> STVRMessage::getStringVector()
 {
     std::vector<std::string> vs;
     vs.resize(getShort());

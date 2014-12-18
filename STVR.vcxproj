@@ -53,15 +53,17 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <MultiProcessorCompilation>
+      </MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
       <AdditionalDependencies>iweardrv.lib;iwrstdrv.lib;Irrlicht.lib;enet.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ProjectReference>
@@ -92,7 +94,7 @@
     <ClInclude Include="InputHMD.h" />
     <ClInclude Include="IrrlichtMgr.h" />
     <ClInclude Include="IWear_Tracking.h" />
-    <ClInclude Include="message.hpp" />
+    <ClInclude Include="MessageMgr.h" />
     <ClInclude Include="ModelMgr.h" />
     <ClInclude Include="NetworkMgr.h" />
     <ClInclude Include="ObjectsMgr.h" />
@@ -104,7 +106,7 @@
     <ClCompile Include="IrrlichtMgr.cpp" />
     <ClCompile Include="IWear_Tracking.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="message.cpp" />
+    <ClCompile Include="MessageMgr.cpp" />
     <ClCompile Include="ModelMgr.cpp" />
     <ClCompile Include="NetworkMgr.cpp" />
     <ClCompile Include="Standard.cpp" />

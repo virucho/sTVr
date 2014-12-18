@@ -32,23 +32,21 @@ NetworkManager* MgrNetwork = 0;
 
 NetworkManager::NetworkManager()
 {
-	m_mode           = NW_CLIENT;
     m_state          = NS_MAIN_MENU;
     m_host           = NULL;
 
-    m_num_clients    = 0;
-    m_host_id        = 0;
+    m_client_id        = 0;
 
     if (enet_initialize () != 0)
     {
-    fprintf (stderr, "An error occurred while initializing ENet.\n");
-    exit(-1);
+		fprintf (stderr, "An error occurred while initializing ENet.\n");
+		exit(-1);
     }
 }   // NetworkManager
 
 NetworkManager::~NetworkManager()
 {
-     if(m_mode==NW_SERVER || m_mode==NW_CLIENT) enet_host_destroy(m_host);
+     enet_host_destroy(m_host);
      enet_deinitialize();
 }   // ~NetworkManager
 
@@ -72,7 +70,7 @@ void NetworkManager::update(float dt)
 			//handleNewConnection(&event);
 			break;
 		case ENET_EVENT_TYPE_RECEIVE:
-			handleMessageAtClient(&event);
+			handleMessagefromServer(&event);
 			break;
 		case ENET_EVENT_TYPE_DISCONNECT:
 			//handleDisconnection(&event);
@@ -131,22 +129,25 @@ bool NetworkManager::initClient(const char* hostName, int portHost)
         return false;
     }
     m_server = peer;
+
+	m_state= NetworkManager::NS_DATA_LOADING;
     return true;
 }  // initClient
 
-void NetworkManager::handleMessageAtClient(ENetEvent *event)
+void NetworkManager::handleMessagefromServer(ENetEvent *event)
 {
-	Message::MessageType TypeMsg;
+	STVRMessage::MessageType TypeMsg;
 	
-	TypeMsg = Message::getPeekType(event->packet);
+	TypeMsg = STVRMessage::getPeekType(event->packet);
 
 	switch(TypeMsg)
 	{
-	case Message::MT_LOADMODEL:
+	case STVRMessage::MT_LOADMODEL:
 		if(m_state == NS_WORLD_LOADING)
 		{
 			Msgloadmodel m(event->packet);
 			MgrScene->loadModel(m.getObjScene());
+			MgrScene->InitWorld();
 		}
 		else if(m_state == NS_MODEL_LOADING)
 		{
@@ -154,20 +155,37 @@ void NetworkManager::handleMessageAtClient(ENetEvent *event)
 			MgrScene->loadModel(m.getObjScene());
 		}
 		break;
-	case Message::MT_OBJS_UPDATE:
+	case STVRMessage::MT_OBJS_UPDATE:
 		if(m_state == NS_UPDATING)
 		{
 			MsgUpdateObj m(event->packet);
 			MgrScene->UpdateModel(m.getObjScene());
 		}
 		break;
-	case Message::MT_END_LOAD:
+	case STVRMessage::MT_END_LOAD:
 		if(m_state == NS_WORLD_LOADING)
 			m_state = NS_MODEL_LOADING;
 		else if(m_state == NS_MODEL_LOADING)
+		{
+			MgrScene->InitWorld();
 			m_state = NS_UPDATING;
+		}
+
+		break;
+	case STVRMessage::MT_GAME_NAME:		MsgGameName m(event->packet);
+		MgrNetwork->setGamename(m.getGameName());
+		MgrNetwork->setClientId(m.getIdClient());
+		//Set the root folder = Gamename
+		MgrScene->setRootfolder(m.getGameName());
 
 		break;
 	}
 }   // handleMessageAtClient
+
+void NetworkManager::sendToServer(STVRMessage &m)
+{
+    enet_peer_send(m_server, 0, m.getPacket());
+    enet_host_flush(m_host);
+}   // sendToServer
+
 

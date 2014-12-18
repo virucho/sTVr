@@ -18,7 +18,6 @@
 /****************************************************************/
 
 #include "ModelMgr.h"
-
 #include "ObjectsMgr.h"
 
 #include <string>
@@ -37,10 +36,8 @@ SceneMgr* MgrScene;
 /*
 Function InitScene() Init the Class and Load the Irrlicht Device
 */
-bool SceneMgr::InitScene(IrrlichtDevice *irrDevice)
+bool SceneMgr::InitSceneMgr(IrrlichtDevice *irrDevice)
 {
-	numModels = 0;
-
 	Device = irrDevice;
 
 	Octree = false;
@@ -60,8 +57,10 @@ bool SceneMgr::loadModel(ObjeScene* Object)
 {
 	ISceneNode* Model = NULL;
 	// modify the name if it a .pk3 file
+	// File name = Media/gamename/lokation/modelname
+	std::string Completname = "Media/" + RootFolder + Object->getAddfolder() + Object->getModelName();
 
-	io::path filename(Object->getModelName().c_str());
+	io::path filename(Completname.c_str());
 
 	io::path extension;
 	core::getFileNameExtension(extension, filename);
@@ -118,48 +117,73 @@ bool SceneMgr::loadModel(ObjeScene* Object)
 		Device->getGUIEnvironment()->addMessageBox(
 		Caption.c_str(), L"The model could not be loaded. " \
 		L"Maybe it is not a supported file format.");
-		return true;
+		return false;
 	}
 
-	// set default material properties
-
-	if (Octree)
-		Model = Device->getSceneManager()->addOctreeSceneNode(m->getMesh(0));
-	else
-	{
-		scene::IAnimatedMeshSceneNode* animModel = Device->getSceneManager()->addAnimatedMeshSceneNode(m);
-		animModel->setAnimationSpeed(30);
-		Model = animModel;
-
-		//Seteo Posiciones
-		Model->setPosition(Object->getPosition());
-		Model->setRotation(Object->getRotation());
-		Model->setScale(Object->getScale());
-	}
-	Model->setMaterialFlag(video::EMF_LIGHTING, UseLight);
-	Model->setMaterialFlag(video::EMF_NORMALIZE_NORMALS, UseLight);
-//	Model->setMaterialFlag(video::EMF_BACK_FACE_CULLING, false);
-	Model->setDebugDataVisible(scene::EDS_OFF);
-
-	Models.push_back(Model);
-	IdNames.push_back(Object->getIdName());
-
-	numModels++;
+	ModelinScene AuxModel;
+	// Copy the Data to Buffer from Objects
+	AuxModel.Model = Model;
+	AuxModel.Mesh = m;
+	AuxModel.Object = Object;
+	AuxModel.inScene = true;
+	AuxModel.Octree = false;
+	Models.push_back(AuxModel);
 
 	return true;
 }
 
+/*
+Function UpdateModel() Search in the Model List to Update the Coords for a wanted Model
+*/
 bool SceneMgr::UpdateModel(ObjeScene* Object)
 {
-	int x;
+	unsigned int x;
 
-	for(x = 0; x < IdNames.size(); x++)
+	for(x = 0; x < Models.size(); x++)
 	{
-		if(Object->getIdName().compare(IdNames[x]) == 0)
+		if(Object->getIdName().compare(Models[x].Object->getIdName()) == 0)
 		{
-			Models[x]->setPosition(Object->getPosition());
-			Models[x]->setRotation(Object->getRotation());
-			Models[x]->setScale(Object->getScale());
+			Models[x].Model->setPosition(Object->getPosition());
+			Models[x].Model->setRotation(Object->getRotation());
+			Models[x].Model->setScale(Object->getScale());
+		}
+	}
+
+	return true;
+}
+
+/*
+Function InitWorld() Create the World to render - Add the Model to the Scene
+*/
+bool SceneMgr::InitWorld()
+{
+	unsigned int x;
+
+	for(x=0; x < Models.size(); x++)
+	{
+		
+		//Validation if the Object musst be render
+		if(Models[x].inScene)
+		{
+			// set default material properties
+			if (Models[x].Octree)
+				Models[x].Model = Device->getSceneManager()->addOctreeSceneNode(Models[x].Mesh->getMesh(0));
+			else
+			{
+				scene::IAnimatedMeshSceneNode* animModel;
+				animModel= Device->getSceneManager()->addAnimatedMeshSceneNode(Models[x].Mesh);
+				animModel->setAnimationSpeed(30);
+				Models[x].Model = animModel;
+
+				//Seteo Posiciones
+				Models[x].Model->setPosition(Models[x].Object->getPosition());
+				Models[x].Model->setRotation(Models[x].Object->getRotation());
+				Models[x].Model->setScale(Models[x].Object->getScale());
+			}
+			Models[x].Model->setMaterialFlag(video::EMF_LIGHTING, UseLight);
+			Models[x].Model->setMaterialFlag(video::EMF_NORMALIZE_NORMALS, UseLight);
+			//	Models[x].Model->setMaterialFlag(video::EMF_BACK_FACE_CULLING, false);
+			Models[x].Model->setDebugDataVisible(scene::EDS_OFF);
 		}
 	}
 

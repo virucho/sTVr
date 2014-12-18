@@ -43,6 +43,8 @@ class ObjeScene
 private:
 	std::string ModelName;
 	std::string IdName;
+	std::string AddFolder;
+
 	vector3df ObjPosition;
 	vector3df ObjRotation;
 	vector3df ObjScale;
@@ -50,13 +52,16 @@ private:
 public:
 	ObjeScene() {IdName = "NONE"; ObjScale = vector3df(1.0f, 1.0f, 1.0f);};
 
+	//Properties
 	void setModelName(std::string Name) {ModelName = Name;}
 	void setIdName(std::string Id) {IdName = Id;}
+	void setAddFolder(std::string folder) {AddFolder = folder;}
 	void setPosition(vector3df Pos) {ObjPosition = Pos;}
 	void setRotation(vector3df Rot) {ObjRotation = Rot;}
 	void setScale(vector3df Scale) {ObjScale = Scale;}
 	std::string getModelName() { return ModelName;}
 	std::string getIdName() { return IdName;}
+	std::string getAddfolder() {return AddFolder;}
 	vector3df getPosition() {return ObjPosition;}
 	vector3df getRotation() {return ObjRotation;}
 	vector3df getScale() {return ObjScale;}
