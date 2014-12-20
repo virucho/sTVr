@@ -32,7 +32,7 @@ NetworkManager* MgrNetwork = 0;
 
 NetworkManager::NetworkManager()
 {
-    m_state          = NS_MAIN_MENU;
+    m_state          = NS_START;
     m_host           = NULL;
 
     m_client_id        = 0;
@@ -64,6 +64,8 @@ void NetworkManager::update(float dt)
         return;
     }
 
+	fprintf(stderr, "Event : %d\n", event.type);
+
     switch (event.type)
     {
 		case ENET_EVENT_TYPE_CONNECT:
@@ -73,7 +75,7 @@ void NetworkManager::update(float dt)
 			handleMessagefromServer(&event);
 			break;
 		case ENET_EVENT_TYPE_DISCONNECT:
-			//handleDisconnection(&event);
+			handleDisconnection(&event);
 			break;
 		case ENET_EVENT_TYPE_NONE:
 			break;
@@ -130,7 +132,7 @@ bool NetworkManager::initClient(const char* hostName, int portHost)
     }
     m_server = peer;
 
-	m_state= NetworkManager::NS_DATA_LOADING;
+	m_state= NetworkManager::NS_PRELOAD_DATA;
     return true;
 }  // initClient
 
@@ -140,16 +142,12 @@ void NetworkManager::handleMessagefromServer(ENetEvent *event)
 	
 	TypeMsg = STVRMessage::getPeekType(event->packet);
 
+	fprintf(stderr, "MessageType : %d\n", TypeMsg);
+
 	switch(TypeMsg)
 	{
 	case STVRMessage::MT_LOADMODEL:
 		if(m_state == NS_WORLD_LOADING)
-		{
-			Msgloadmodel m(event->packet);
-			MgrScene->loadModel(m.getObjScene());
-			MgrScene->InitWorld();
-		}
-		else if(m_state == NS_MODEL_LOADING)
 		{
 			Msgloadmodel m(event->packet);
 			MgrScene->loadModel(m.getObjScene());
@@ -164,20 +162,17 @@ void NetworkManager::handleMessagefromServer(ENetEvent *event)
 		break;
 	case STVRMessage::MT_END_LOAD:
 		if(m_state == NS_WORLD_LOADING)
-			m_state = NS_MODEL_LOADING;
-		else if(m_state == NS_MODEL_LOADING)
 		{
 			MgrScene->InitWorld();
 			m_state = NS_UPDATING;
 		}
-
 		break;
 	case STVRMessage::MT_GAME_NAME:		MsgGameName m(event->packet);
 		MgrNetwork->setGamename(m.getGameName());
 		MgrNetwork->setClientId(m.getIdClient());
-		//Set the root folder = Gamename
-		MgrScene->setRootfolder(m.getGameName());
+		MgrScene->setRootfolder(m.getGameName());	//Set the root folder = Gamename
 
+		fprintf(stderr, "Starting Game : %s\n", MgrNetwork->getGamename().c_str());
 		break;
 	}
 }   // handleMessageAtClient
@@ -187,5 +182,11 @@ void NetworkManager::sendToServer(STVRMessage &m)
     enet_peer_send(m_server, 0, m.getPacket());
     enet_host_flush(m_host);
 }   // sendToServer
+
+void NetworkManager::handleDisconnection(ENetEvent *event)
+{
+    fprintf(stderr, "%x:%d disconnected (host id %d).\n", event->peer->address.host,
+        event->peer->address.port, (int)(long)event->peer->data );
+}   // handleDisconnection
 
 

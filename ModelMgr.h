@@ -48,8 +48,7 @@ struct ModelinScene
 {
 	ISceneNode* Model;							// Node of the loaded Model
 	IAnimatedMesh* Mesh;						// Mesh of the loaded Model
-	ObjeScene* Object;							// Data from oBject in scene
-	bool inScene;								// say if the Model is render in the scene
+	ObjeScene Object;							// Data from oBject in scene
 	bool Octree;								// If the model use Octree or Not
 };
 
@@ -74,7 +73,7 @@ private:
 public:
 	bool InitSceneMgr(IrrlichtDevice *irrDevice);
 	bool InitWorld();
-	bool loadModel(ObjeScene* Object);
+	bool loadModel(ObjeScene Object);
 	bool UpdateModel(ObjeScene* Object);
 
 	//Propiedades

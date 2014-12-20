@@ -18,7 +18,8 @@
 //#define _WINSOCKAPI_		//Alguien esta cargando Winsock, por eso esto elimina las def
 
 #define INT_FULLSCRENN false
-#define STVR_VERSION 0.3f
+#define USE_CONSOLE
+#define STVR_VERSION 0.40
 
 #define _DEFAULT_STEP_ 0.5f
 
@@ -60,7 +61,9 @@ using namespace gui;
 //Adicion de parametros en la compilacion apra la libreria (Solo en Windows)
 #ifdef _IRR_WINDOWS_
 	#pragma comment(lib, "Irrlicht.lib")
-	#pragma comment(linker, "/subsystem:windows /ENTRY:mainCRTStartup")
+	#ifndef USE_CONSOLE
+		#pragma comment(linker, "/subsystem:windows /ENTRY:mainCRTStartup")
+	#endif
 #endif
 
 /****************************************************************/
@@ -169,9 +172,9 @@ int main(int argc, char *argv[] )
 	int lastFPS = -1;
 	int fps = -1;
 
-	printf("Starting sTVr Version : %f\n", STVR_VERSION);
+	fprintf(stderr, "Starting sTVr Version : %f\n\n", STVR_VERSION);
 	core::stringw strName = L"Streaming Virtual reality sTVr";
-	
+
 	InitReset();
 	
 	if(!irrMgr->InitIrrlicht(appReceiver))
@@ -183,7 +186,7 @@ int main(int argc, char *argv[] )
 	MgrNetwork->setState(NetworkManager::NS_CONNECTING);
 	if(!MgrNetwork->initClient("localhost", 2305))
 	{
-		printf("Error conectadon");
+		fprintf(stderr, "Error with the connection to : %d", 2305);
 		irrMgr->irrDevice->drop();
 		return false;
 	}
@@ -203,8 +206,14 @@ int main(int argc, char *argv[] )
 	MgrNetwork->setState(NetworkManager::NS_WORLD_LOADING);
 
 	/*ObjeScene Obj;
-	Obj.setModelName("Media/tracks/farm/farm_track.b3d");
-	MgrScene->loadModel(&Obj);*/
+	Obj.setModelName("farm_track.b3d");
+	Obj.setAddFolder("tracks/farm/");
+	Obj.setinScene(true);
+	Obj.setScale(vector3df(1.0f, 1.0f, 1.0f));
+	MgrScene->setRootfolder("SuperTuxKart");*/
+	
+	//MgrScene->loadModel(Obj);
+	//MgrScene->InitWorld();
 
 	while(irrMgr->irrDevice->run() && !irrExit)
 	//while(!irrExit)
@@ -280,7 +289,7 @@ int main(int argc, char *argv[] )
 			{
 				strName = L"MedienProjekt - IrrlichtVR [FPS: ";
 				strName += fps;
-				strName += "] - ";
+				strName += "] -> ";
 				strName += MgrNetwork->getState();
 
 				irrMgr->irrDevice->setWindowCaption(strName.c_str());

@@ -53,12 +53,12 @@ Function loadModel() loads a model and displays it using an
 addAnimatedMeshSceneNode and the scene manager. Nothing difficult. It also
 displays a short message box, if the model could not be loaded.
 */
-bool SceneMgr::loadModel(ObjeScene* Object)
+bool SceneMgr::loadModel(ObjeScene Object)
 {
 	ISceneNode* Model = NULL;
 	// modify the name if it a .pk3 file
 	// File name = Media/gamename/lokation/modelname
-	std::string Completname = "Media/" + RootFolder + Object->getAddfolder() + Object->getModelName();
+	std::string Completname = "Media/" + RootFolder + Object.getAddfolder() + Object.getModelName();
 
 	io::path filename(Completname.c_str());
 
@@ -122,10 +122,8 @@ bool SceneMgr::loadModel(ObjeScene* Object)
 
 	ModelinScene AuxModel;
 	// Copy the Data to Buffer from Objects
-	AuxModel.Model = Model;
 	AuxModel.Mesh = m;
 	AuxModel.Object = Object;
-	AuxModel.inScene = true;
 	AuxModel.Octree = false;
 	Models.push_back(AuxModel);
 
@@ -141,7 +139,7 @@ bool SceneMgr::UpdateModel(ObjeScene* Object)
 
 	for(x = 0; x < Models.size(); x++)
 	{
-		if(Object->getIdName().compare(Models[x].Object->getIdName()) == 0)
+		if(Object->getIdName().compare(Models[x].Object.getIdName()) == 0)
 		{
 			Models[x].Model->setPosition(Object->getPosition());
 			Models[x].Model->setRotation(Object->getRotation());
@@ -163,7 +161,7 @@ bool SceneMgr::InitWorld()
 	{
 		
 		//Validation if the Object musst be render
-		if(Models[x].inScene)
+		if(Models[x].Object.getinScene())
 		{
 			// set default material properties
 			if (Models[x].Octree)
@@ -176,9 +174,9 @@ bool SceneMgr::InitWorld()
 				Models[x].Model = animModel;
 
 				//Seteo Posiciones
-				Models[x].Model->setPosition(Models[x].Object->getPosition());
-				Models[x].Model->setRotation(Models[x].Object->getRotation());
-				Models[x].Model->setScale(Models[x].Object->getScale());
+				Models[x].Model->setPosition(Models[x].Object.getPosition());
+				Models[x].Model->setRotation(Models[x].Object.getRotation());
+				Models[x].Model->setScale(Models[x].Object.getScale());
 			}
 			Models[x].Model->setMaterialFlag(video::EMF_LIGHTING, UseLight);
 			Models[x].Model->setMaterialFlag(video::EMF_NORMALIZE_NORMALS, UseLight);

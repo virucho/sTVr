@@ -45,11 +45,10 @@ public:
     enum NetworkMode {NW_SERVER, NW_CLIENT, NW_NONE};
 
     // States for the finite state machine. First for server:
-    enum NetworkState {NS_MAIN_MENU,						// Estado Inicial
+    enum NetworkState {NS_START = 1,						// Estado Inicial
                        NS_CONNECTING,						// Conectadon con el servidor
-					   NS_DATA_LOADING,						// Esperando lista de Modelos a Usar
+					   NS_PRELOAD_DATA,						// Esperando lista de Modelos a Usar
                        NS_WORLD_LOADING,					// Esperando Modelo del Mundo
-					   NS_MODEL_LOADING,					// Esperando Modelos variables (Karts)
 					   NS_UPDATING,							// Esperando Actializaciones de la Pista
 					   NS_ENDING_GAME						// Esperendo Fin del Juego
     };
@@ -73,6 +72,7 @@ public:
 	void setGamename(std::string name)				{m_Gamename = name;		}
 	int          getMyClientId() const				{return m_client_id;	}
     void         setClientId(int host_id)			{m_client_id = host_id;	}
+	std::string	 getGamename()						{return m_Gamename;		}
            
 	void update(float dt);
 	bool initClient(const char* hostName, int portHost);

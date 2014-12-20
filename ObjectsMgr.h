@@ -40,17 +40,41 @@ using namespace core;			//Zusätzliche Namespace
 
 class ObjeScene
 {
+public:
+	enum MyModeltype
+	{
+		MMT_PERMANENT=1,					// Model is always in memory until the end from the App
+		MMT_TEMP							// Model is destroy when the scene finish
+	};
+
 private:
 	std::string ModelName;
 	std::string IdName;
 	std::string AddFolder;
+
+	MyModeltype Modeltype;					// Type of Load (in memory) from the model
+	bool inScene;
 
 	vector3df ObjPosition;
 	vector3df ObjRotation;
 	vector3df ObjScale;
 
 public:
-	ObjeScene() {IdName = "NONE"; ObjScale = vector3df(1.0f, 1.0f, 1.0f);};
+	ObjeScene(std::string name, MyModeltype type)
+	{
+		IdName = "NA";
+		inScene = false;
+		ObjScale = vector3df(1.0f, 1.0f, 1.0f);
+		ModelName = name;
+		Modeltype = type;
+	};
+	ObjeScene()
+	{
+		IdName = "NA";
+		inScene = false;
+		ObjScale = vector3df(1.0f, 1.0f, 1.0f);
+		Modeltype = MMT_TEMP;
+	};
 
 	//Properties
 	void setModelName(std::string Name) {ModelName = Name;}
@@ -59,12 +83,16 @@ public:
 	void setPosition(vector3df Pos) {ObjPosition = Pos;}
 	void setRotation(vector3df Rot) {ObjRotation = Rot;}
 	void setScale(vector3df Scale) {ObjScale = Scale;}
+	void setModeltype(MyModeltype type) {Modeltype = type;}
+	void setinScene(bool isinscene) {inScene = isinscene;}
 	std::string getModelName() { return ModelName;}
 	std::string getIdName() { return IdName;}
 	std::string getAddfolder() {return AddFolder;}
 	vector3df getPosition() {return ObjPosition;}
 	vector3df getRotation() {return ObjRotation;}
 	vector3df getScale() {return ObjScale;}
+	MyModeltype getModeltype() {return Modeltype;}
+	bool getinScene() {return inScene;}
 
 	//Funciones
 	void UpdateCoords(vector3df Position, vector3df Rotation,	vector3df Scale)

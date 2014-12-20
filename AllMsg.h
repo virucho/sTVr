@@ -45,17 +45,22 @@ private:
 public:
 	Msgloadmodel(ObjeScene* Obj): STVRMessage(STVRMessage::MT_LOADMODEL)
 	{
-		//Mensaje ID, Nombre, Address Folder, IdName, 3*Float Position, 3*Float Rotation, 3*Float Scale
+		//Mensaje ID, Nombre, Address Folder, IdName, Type, inScene, 3*Float Position, 3*Float Rotation, 3*Float Scale
 		int LenMsg = 0;
 		LenMsg += getStringLength(Obj->getModelName());
 		LenMsg += getStringLength(Obj->getAddfolder());
 		LenMsg += getStringLength(Obj->getIdName());
+		LenMsg += getCharLength();
+		LenMsg += getBoolLength();
 		LenMsg += 3 * getFloatLength() * 3;
 		
 		allocate(LenMsg);
 		addString(Obj->getModelName());
 		addString(Obj->getAddfolder());
 		addString(Obj->getIdName());
+
+		addChar((char)Obj->getModeltype());
+		addBool(Obj->getinScene());
 
 		addFloat(Obj->getPosition().X);
 		addFloat(Obj->getPosition().Y);
@@ -74,13 +79,17 @@ public:
 		Object.setModelName(getString());
 		Object.setAddFolder(getString());
 		Object.setIdName(getString());
+
+		Object.setModeltype((ObjeScene::MyModeltype) this->getChar());
+		Object.setinScene(getBool());
+
 		Object.setPosition(vector3df(getFloat(), getFloat(), getFloat()));
 		Object.setRotation(vector3df(getFloat(), getFloat(), getFloat()));
 		Object.setScale(vector3df(getFloat(), getFloat(), getFloat()));
 	}
 
 	//Propiedades
-	ObjeScene* getObjScene() { return &Object; }
+	ObjeScene getObjScene() { return Object; }
 };   // Msgloadmodel
 
 /***********************************************************************************/
