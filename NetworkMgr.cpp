@@ -132,7 +132,6 @@ bool NetworkManager::initClient(const char* hostName, int portHost)
     }
     m_server = peer;
 
-	m_state= NetworkManager::NS_PRELOAD_DATA;
     return true;
 }  // initClient
 
@@ -167,12 +166,31 @@ void NetworkManager::handleMessagefromServer(ENetEvent *event)
 			m_state = NS_UPDATING;
 		}
 		break;
-	case STVRMessage::MT_GAME_NAME:		MsgGameName m(event->packet);
-		MgrNetwork->setGamename(m.getGameName());
-		MgrNetwork->setClientId(m.getIdClient());
-		MgrScene->setRootfolder(m.getGameName());	//Set the root folder = Gamename
+	case STVRMessage::MT_GAME_NAME:
+		if(m_state == NS_CONNECTING)
+		{
+			MsgGameName m(event->packet);
+			MgrNetwork->setGamename(m.getGameName());
+			MgrNetwork->setClientId(m.getIdClient());
+			MgrScene->setRootfolder(m.getGameName());	//Set the root folder = Gamename
 
-		fprintf(stderr, "Starting Game : %s\n", MgrNetwork->getGamename().c_str());
+			fprintf(stderr, "Starting Game : %s\n", MgrNetwork->getGamename().c_str());
+			m_state= NetworkManager::NS_PRELOAD_DATA;
+		
+			//Lugar provisional porqeu solo hace el query una vez
+			MsgPredataQuery msg;
+			MgrNetwork->sendToServer(msg);
+		}
+		
+		break;
+	case STVRMessage::MT_PRELOAD_DATA:
+		MsgPreloadData m(event->packet);
+		preloadfiles.push_back(m.getData());
+		if(m.isFinish())
+		{
+			MgrScene->Loadpredata();
+			m_state = NS_WORLD_LOADING;
+		}
 		break;
 	}
 }   // handleMessageAtClient

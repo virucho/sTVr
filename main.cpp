@@ -19,7 +19,7 @@
 
 #define INT_FULLSCRENN false
 #define USE_CONSOLE
-#define STVR_VERSION 0.40
+#define STVR_VERSION 0.50
 
 #define _DEFAULT_STEP_ 0.5f
 
@@ -203,7 +203,7 @@ int main(int argc, char *argv[] )
 		video::SColorf(1.0f,1.0f,1.0f),2000);
 	irrMgr->irrSmgr->setAmbientLight(video::SColorf(0.3f,0.3f,0.3f));
 
-	MgrNetwork->setState(NetworkManager::NS_WORLD_LOADING);
+	//MgrNetwork->setState(NetworkManager::NS_WORLD_LOADING);
 
 	/*ObjeScene Obj;
 	Obj.setModelName("farm_track.b3d");
@@ -228,6 +228,8 @@ int main(int argc, char *argv[] )
 
 			//Actualizo conexiones
 			MgrNetwork->update(0);
+
+			MgrScene;
 
 			//Change Position from Camera
 			MoveCameraArrow(MgrCamera->CamPos, MgrCamera->ViewVector, appReceiver);

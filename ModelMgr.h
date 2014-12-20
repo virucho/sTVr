@@ -28,6 +28,7 @@
 #include <vector>
 
 #include "ObjectsMgr.h"
+#include "NetworkMgr.h"
 
 /****************************************************************/
 /*                        Namespace                             */
@@ -72,8 +73,10 @@ private:
 
 public:
 	bool InitSceneMgr(IrrlichtDevice *irrDevice);
+	bool Loadpredata();
 	bool InitWorld();
 	bool loadModel(ObjeScene Object);
+	IAnimatedMesh* getb3dzfile(const std::string &filename);
 	bool UpdateModel(ObjeScene* Object);
 
 	//Propiedades

@@ -62,7 +62,7 @@ private:
 public:
 	ObjeScene(std::string name, MyModeltype type)
 	{
-		IdName = "NA";
+		IdName = name;
 		inScene = false;
 		ObjScale = vector3df(1.0f, 1.0f, 1.0f);
 		ModelName = name;

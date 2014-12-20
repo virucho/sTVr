@@ -52,6 +52,10 @@ public:
 					   NS_UPDATING,							// Esperando Actializaciones de la Pista
 					   NS_ENDING_GAME						// Esperendo Fin del Juego
     };
+
+	//List with the models and folders to preload
+	std::vector<preLoadModel> preloadfiles;					// files
+
 private:
 
     bool						m_active;

@@ -109,14 +109,20 @@ bool SceneMgr::loadModel(ObjeScene Object)
 			Model = outNodes[0];
 		return true;
 	}
+	scene::IAnimatedMesh* m;
 
-	scene::IAnimatedMesh* m = Device->getSceneManager()->getMesh( filename.c_str() );
+	if(extension == ".b3dz")
+		m = getb3dzfile( filename.c_str() );
+	else
+		m = Device->getSceneManager()->getMesh( filename.c_str() );
+	
 	if (!m)
 	{
 		// model could not be loaded
-		Device->getGUIEnvironment()->addMessageBox(
+		/*Device->getGUIEnvironment()->addMessageBox(
 		Caption.c_str(), L"The model could not be loaded. " \
-		L"Maybe it is not a supported file format.");
+		L"Maybe it is not a supported file format.");*/
+		fprintf(stderr, "Error loading the file : %s\n", filename.c_str());
 		return false;
 	}
 
@@ -186,5 +192,53 @@ bool SceneMgr::InitWorld()
 	}
 
 	return true;
+}
+
+bool SceneMgr::Loadpredata()
+{
+	unsigned int x, y;
+	
+	for(y=0; y < MgrNetwork->preloadfiles.size(); y++)
+	{
+		for(x=0; x < MgrNetwork->preloadfiles[y].files.size(); x++)
+		{
+			ObjeScene Obj(MgrNetwork->preloadfiles[y].files[x], ObjeScene::MMT_PERMANENT);
+			Obj.setAddFolder(MgrNetwork->preloadfiles[y].folder);
+
+			//Load Obbj
+			loadModel(Obj);
+		}
+	}
+	
+	return true;
+}
+
+IAnimatedMesh* SceneMgr::getb3dzfile(const std::string &filename)
+{
+    scene::IAnimatedMesh *m  = NULL;
+
+    // compressed file
+    io::IFileSystem* file_system = Device->getFileSystem();
+    if (!file_system->addFileArchive(filename.c_str(),
+                                        /*ignoreCase*/false,
+                                        /*ignorePath*/true, io::EFAT_ZIP))
+    {
+        fprintf(stderr, "irr_driver : getMesh: Failed to open zip file <%s>\n",
+                    filename.c_str());
+        return NULL;
+    }
+
+    // Get the recently added archive
+    io::IFileArchive* zip_archive =
+    file_system->getFileArchive(file_system->getFileArchiveCount()-1);
+    io::IReadFile* content = zip_archive->createAndOpenFile(0);
+    m = Device->getSceneManager()->getMesh(content);
+    content->drop();
+
+    file_system->removeFileArchive(file_system->getFileArchiveCount()-1);
+
+    if(!m) return NULL;
+
+    return m;
 }
 

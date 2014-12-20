@@ -47,10 +47,11 @@ public:
     enum MessageType {
 						MT_CONNECT=1,
 						MT_GAME_NAME,
-						MT_USE_MODELS,
+						MT_PRELOAD_DATA,
 						MT_LOADMODEL,
 						MT_OBJS_UPDATE,
-						MT_END_LOAD
+						MT_END_LOAD,
+						MT_PREDATA_Q
                      };
 private:
     ENetPacket  *m_pkt;

@@ -30,8 +30,14 @@
 #include <vector>
 
 /****************************************************************/
-/*                        Namespace                             */
+/*                        Structs                              */
 /****************************************************************/
+
+struct preLoadModel
+{
+	std::string folder;							// Root folder, that conttent the files to load
+	std::vector<std::string> files;				// list of the Models to load
+};
 
 /****************************************************************/
 /*                       Class									*/
@@ -45,7 +51,7 @@ private:
 public:
 	Msgloadmodel(ObjeScene* Obj): STVRMessage(STVRMessage::MT_LOADMODEL)
 	{
-		//Mensaje ID, Nombre, Address Folder, IdName, Type, inScene, 3*Float Position, 3*Float Rotation, 3*Float Scale
+		//Mensaje ID, Nombre, Folder, IdName, Type, inScene, 3*Float Position, 3*Float Rotation, 3*Float Scale
 		int LenMsg = 0;
 		LenMsg += getStringLength(Obj->getModelName());
 		LenMsg += getStringLength(Obj->getAddfolder());
@@ -190,6 +196,81 @@ public:
 	std::string getGameName() { return GameName; }
 	int getIdClient() { return IdClient; }
 };   // MsgGameName
+
+/***********************************************************************************/
+
+class MsgPredataQuery : public STVRMessage
+{
+public:
+	MsgPredataQuery(): STVRMessage(STVRMessage::MT_PREDATA_Q)
+	{
+		//Mensaje ID, Numero de Modelos
+		int LenMsg = 0;
+		LenMsg = getStringLength("QUERY");
+		
+		allocate(LenMsg);
+		addString("QUERY");
+	}
+    MsgPredataQuery(ENetPacket* pkt): STVRMessage(pkt)
+	{
+		//std::string Dato = getString();
+	}
+
+};   // MsgPredataQuery
+
+/***********************************************************************************/
+
+class MsgPreloadData : public STVRMessage
+{
+private:
+	preLoadModel Data; 
+	bool finish;
+
+public:
+	MsgPreloadData(preLoadModel &data, bool finish): STVRMessage(STVRMessage::MT_PRELOAD_DATA)
+	{
+		//Mensaje ID, #files, Finish?, folder, vector with the file names
+		unsigned int x;
+		int LenMsg = 0;
+		LenMsg = getIntLength() + getBoolLength();
+		LenMsg += getStringLength(data.folder);
+		for(x=0; x < data.files.size(); x++)
+		{
+			LenMsg += getStringLength(data.files[x]);
+		}
+		
+		allocate(LenMsg);
+
+		addInt(data.files.size());
+		addBool(finish);
+		addString(data.folder);
+		for(x=0; x < data.files.size(); x++)
+		{
+			addString(data.files[x]);
+		}
+
+	}
+    MsgPreloadData(ENetPacket* pkt): STVRMessage(pkt)
+	{
+		int x, Numfiles;
+		
+		Numfiles = getInt();
+		finish = getBool();
+		Data.folder = getString();
+		for(x=0; x < Numfiles; x++)
+		{
+			Data.files.push_back(getString());
+		}
+	}
+
+	//Propiedades
+	std::string getFolder()			{return Data.folder;}
+	int getNumfiles()				{return Data.files.size();}
+	std::string getfile(int idx)	{return Data.files[idx];}
+	preLoadModel getData()			{return Data;}
+	bool isFinish()					{return finish;}
+
+};   // MsgPreloadData
 
 /****************************************************************/
 /*                        Global                                */
