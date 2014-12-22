@@ -202,11 +202,42 @@ bool SceneMgr::Loadpredata()
 	{
 		for(x=0; x < MgrNetwork->preloadfiles[y].files.size(); x++)
 		{
-			ObjeScene Obj(MgrNetwork->preloadfiles[y].files[x], ObjeScene::MMT_PERMANENT);
-			Obj.setAddFolder(MgrNetwork->preloadfiles[y].folder);
+			//Validation for Empty file
+			if(MgrNetwork->preloadfiles[y].files[x] != "")
+			{
+				//remove the extension
+				std::string Idname = MgrNetwork->preloadfiles[y].files[x];
+				std::size_t found = Idname.rfind('.');
+				Idname.erase(found, Idname.length());
 
-			//Load Obbj
-			loadModel(Obj);
+				ObjeScene Obj(MgrNetwork->preloadfiles[y].files[x], ObjeScene::MMT_PERMANENT);
+				Obj.setIdName(Idname);
+				Obj.setAddFolder(MgrNetwork->preloadfiles[y].folder);
+
+				//Load Obbj
+				loadModel(Obj);
+			}
+		}
+	}
+	
+	return true;
+}
+
+bool SceneMgr::LoadModelinScene(std::vector<std::string> inmodels)
+{
+	unsigned int x, y;
+	unsigned int Numfiles = inmodels.size();
+	unsigned int NumModels = Models.size();
+
+	for(x=0; x < Numfiles; x++)
+	{
+		for(y=0; y < NumModels; y++)
+		{
+			if(inmodels[x] == Models[y].Object.getIdName())
+			{
+				Models[y].Object.setinScene(true);
+				break;
+			}
 		}
 	}
 	

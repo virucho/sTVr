@@ -33,7 +33,7 @@ MainCamera::MainCamera(bool Stereo)
 {
 	StereoCam = Stereo;
 
-	CamPos = vector3df(0.0f,150,0);
+	CamPos = vector3df(0.0f,2,0);
 	ViewVector = vector3df(1.0f,-1.0f,1.0f);
 
 	cameraRight = NULL;

@@ -272,6 +272,52 @@ public:
 
 };   // MsgPreloadData
 
+/***********************************************************************************/
+
+class MsgLoadModelScene : public STVRMessage
+{
+private:
+	std::vector<std::string> Idnames;
+
+public:
+	MsgLoadModelScene(std::vector<std::string> Idnames): STVRMessage(STVRMessage::MT_LOADINSCENE)
+	{
+		//Mensaje ID, #files, Idname
+		unsigned int x;
+		int LenMsg = 0;
+		LenMsg = getIntLength();
+		for(x=0; x < Idnames.size(); x++)
+		{
+			LenMsg += getStringLength(Idnames[x]);
+		}
+		
+		allocate(LenMsg);
+
+		addInt(Idnames.size());
+		for(x=0; x < Idnames.size(); x++)
+		{
+			addString(Idnames[x]);
+		}
+
+	}
+    MsgLoadModelScene(ENetPacket* pkt): STVRMessage(pkt)
+	{
+		int x, Numfiles;
+		
+		Numfiles = getInt();
+		for(x=0; x < Numfiles; x++)
+		{
+			Idnames.push_back(getString());
+		}
+	}
+
+	//Propiedades
+	int getNumidData()					{return Idnames.size();}
+	std::string getIdname(int idx)		{return Idnames[idx];}
+	std::vector<std::string> getData()	{return Idnames;}
+
+};   // MsgLoadModelScene
+
 /****************************************************************/
 /*                        Global                                */
 /****************************************************************/

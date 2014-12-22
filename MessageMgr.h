@@ -51,7 +51,8 @@ public:
 						MT_LOADMODEL,
 						MT_OBJS_UPDATE,
 						MT_END_LOAD,
-						MT_PREDATA_Q
+						MT_PREDATA_Q,
+						MT_LOADINSCENE
                      };
 private:
     ENetPacket  *m_pkt;

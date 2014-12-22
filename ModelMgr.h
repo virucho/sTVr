@@ -76,6 +76,7 @@ public:
 	bool Loadpredata();
 	bool InitWorld();
 	bool loadModel(ObjeScene Object);
+	bool LoadModelinScene(std::vector<std::string> models);
 	IAnimatedMesh* getb3dzfile(const std::string &filename);
 	bool UpdateModel(ObjeScene* Object);
 

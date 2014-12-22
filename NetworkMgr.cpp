@@ -152,6 +152,13 @@ void NetworkManager::handleMessagefromServer(ENetEvent *event)
 			MgrScene->loadModel(m.getObjScene());
 		}
 		break;
+	case STVRMessage::MT_LOADINSCENE:
+		if(m_state == NS_WORLD_LOADING)
+		{
+			MsgLoadModelScene m(event->packet);
+			MgrScene->LoadModelinScene(m.getData());
+		}
+		break;
 	case STVRMessage::MT_OBJS_UPDATE:
 		if(m_state == NS_UPDATING)
 		{
