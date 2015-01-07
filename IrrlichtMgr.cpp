@@ -58,6 +58,10 @@ bool irrManager::InitIrrlicht(IEventReceiver* appReceiver)
 	//Defino el Directorio de Assets
 	irrDevice->getFileSystem()->addFileArchive("Media/");
 
+	//Set only Errors Logs in Console
+	irr::ILogger* logger = irrDevice->getLogger();
+	logger->setLogLevel(ELL_ERROR);
+
 	return true;
 }
 

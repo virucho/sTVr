@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!-- Generated with script from SVN rev 14368 -->
+<kart name              = "Sara"
+      version           = "2"
+      model-file        = "sara.b3d"
+      icon-file         = "icon-sara.png"
+      minimap-icon-file = "icon-sara.png"
+      shadow-file       = "sara-shadow.png"
+      random-wheel-rot  = "true"
+      groups            = "standard"
+      rgb               = "1.00 1.00 1.00" >
+  <sounds engine = "small"/>
+  <animations left = "3"
+              straight = "9"
+              right = "29"
+              start-jump = "34"
+              end-jump = "53"/>
+  <wheels>
+    <rear-right position = "0.068709 0.081474 -0.591670"
+                 model    = "wheel-rear-right.b3d"       />
+    <rear-left position = "-0.066272 0.081474 -0.591670"
+                 model    = "wheel-rear-left.b3d"       />
+    <front-left position = "-0.242191 0.139325 0.448525"
+                 model    = "wheel-front-left.b3d"       />
+    <front-right position = "0.242191 0.139325 0.448525"
+                 model    = "wheel-front-right.b3d"       />
+  </wheels>
+  <nitro-emitter>
+    <nitro-emitter-a position = "0.178296 0.283328 -0.480724" />
+    <nitro-emitter-b position = "-0.178441 0.283328 -0.480724" />
+  </nitro-emitter>
+  <speed-weighted-objects>
+    <speed-weighted position="0.000000 0.000000 0.000000" model="caterpillar.b3d"  strength-factor="1.000000" speed-factor="1.000000" texture-speed-x="0.100000" texture-speed-y="0.000000"/>
+  </speed-weighted-objects>
+  <hat offset="0.0 0.07 0.0"/>
+</kart>

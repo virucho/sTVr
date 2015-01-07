@@ -127,7 +127,7 @@ bool NetworkManager::initClient(const char* hostName, int portHost)
         enet_peer_reset (peer);
 
         fprintf(stderr, "Connection to '%s:%d' failed.\n",
-                "loclhost", 2305);
+                hostName, portHost);
         return false;
     }
     m_server = peer;

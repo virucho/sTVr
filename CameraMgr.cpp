@@ -33,14 +33,16 @@ MainCamera::MainCamera(bool Stereo)
 {
 	StereoCam = Stereo;
 
-	CamPos = vector3df(0.0f,2,0);
-	ViewVector = vector3df(1.0f,-1.0f,1.0f);
+	TotalCamPos = CamPos = vector3df(0.0f,0.5f,0);
+	TotalViewVector = ViewVector = vector3df(1.0f,-1.0f,1.0f);
 
 	cameraRight = NULL;
 	cameraLeft = NULL;
 
 	CameraAux[0] = NULL;
 	CameraAux[1] = NULL;
+
+	CurrentObjCam = 0;
 }
 
 bool MainCamera::CreateCameras(ISceneManager* irrSmgr)
@@ -50,15 +52,19 @@ bool MainCamera::CreateCameras(ISceneManager* irrSmgr)
 
 	if(SceneMgr != NULL)
 		SceneMgr = irrSmgr;
+
+	float m_fov = DEGREE_TO_RAD*75.0f;
 	
 	//Add Camera in the Scene
 	cameraRight =irrSmgr->addCameraSceneNode(0, CamPos, ViewVector);
-	cameraRight->setFOV(DEFAULT_FOV_Y);
-	cameraRight->setNearValue(DEFAULT_NEAR_Z);
-	cameraRight->setFarValue(DEFAULT_FAR_Z);
+	//cameraRight->setFOV(DEFAULT_FOV_Y);
+	cameraRight->setFOV(m_fov);
+	//cameraRight->setNearValue(DEFAULT_NEAR_Z);
+	//cameraRight->setFarValue(DEFAULT_FAR_Z);
+	cameraRight->setFarValue(1000.0f);
 
 	cameraLeft = irrSmgr->addCameraSceneNode(0, CamPos, ViewVector);
-	cameraLeft->setFOV(DEFAULT_FOV_Y);
+	cameraLeft->setFOV(m_fov);
 	cameraLeft->setNearValue(DEFAULT_NEAR_Z);
 	cameraLeft->setFarValue(DEFAULT_FAR_Z);
 
@@ -99,6 +105,26 @@ void MainCamera::ActiveCameraMaya()
 void MainCamera::ActiveCameraFPS()
 {
 	setActiveCamera(CameraAux[1]);
+}
+
+void MainCamera::followObj()
+{
+	vector3df Pos;
+	float totalPitch;
+	float Totalyaw;
+	
+	// Calculo Posicion
+	Pos = MgrScene->getModelPosition(TrackObj[CurrentObjCam]);
+	TotalCamPos = Pos + CamPos;
+
+	// Calculo angulo de la camara
+	Pos = MgrScene->getModelDirection(TrackObj[CurrentObjCam]);
+
+	Pos += ViewVector;
+
+	TotalViewVector = vector3df(tan(Pos.Y), tan(Pos.Z), 1.0f);
+
+	//TotalViewVector = Viewdir + ViewVector;
 }
 
 /*

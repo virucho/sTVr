@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!-- Generated with script from SVN rev 14302 -->
+<kart name              = "Xue"
+      version           = "2"
+      model-file        = "xue.b3d"
+      icon-file         = "xfce_icon64.png"
+      minimap-icon-file = "xfce_icon32.png"
+      shadow-file       = "shadow.png"
+      random-wheel-rot  = "false"
+      center-shift      = "0.30"
+      groups            = "standard"
+      rgb               = "0.03 0.40 1.00" >
+  <sounds engine = "large"/>
+  <animations left = "19"
+              straight = "39"
+              right = "59"
+              start-winning = "79"
+              start-winning-loop = "159"
+              end-winning = "189"
+              start-losing = "219"
+              start-losing-loop = "259"
+              end-losing = "289"
+              start-speed-weighted = "299"
+              end-speed-weighted = "329"/>
+  <nitro-emitter>
+    <nitro-emitter-a position = "0.355961 0.446362 -0.547407" />
+    <nitro-emitter-b position = "-0.355961 0.446362 -0.547407" />
+  </nitro-emitter>
+  <speed-weighted-objects strength-factor="-1.0" speed-factor="10.0">
+    <speed-weighted position = "0.000000 0.000000 0.000000" model = "hc.propeller.b3d"/>
+  </speed-weighted-objects>
+  <hat offset="0.0 0.05 0.07"/>
+</kart>

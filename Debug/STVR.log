@@ -1,12 +1,16 @@
-﻿Build started 22.12.2014 23:26:10.
-     1>Project "C:\Users\luisalejandro\Documents\Visual Studio 2012\Projects\STVR\STVR\STVR.vcxproj" on node 2 (Build target(s)).
+﻿Build started 07.01.2015 17:01:29.
+     1>Project "C:\Users\luisalejandro\documents\visual studio 2012\Projects\STVR\STVR\STVR.vcxproj" on node 2 (Build target(s)).
      1>InitializeBuildStatus:
          Creating "Debug\STVR.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt CameraMgr.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt CameraMgr.cpp main.cpp
+         main.cpp
          CameraMgr.cpp
+     1>c:\users\luisalejandro\documents\visual studio 2012\projects\stvr\stvr\cameramgr.cpp(113): warning C4101: 'totalPitch' : unreferenced local variable
+     1>c:\users\luisalejandro\documents\visual studio 2012\projects\stvr\stvr\cameramgr.cpp(114): warning C4101: 'Totalyaw' : unreferenced local variable
+         Generating Code...
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\luisalejandro\Documents\Visual Studio 2012\Projects\STVR\Debug\STVR.exe" /INCREMENTAL /NOLOGO iweardrv.lib iwrstdrv.lib Irrlicht.lib enet.lib Kinect10.lib OpenGL32.lib freeglut.lib glew32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\luisalejandro\Documents\Visual Studio 2012\Projects\STVR\Debug\STVR.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\luisalejandro\Documents\Visual Studio 2012\Projects\STVR\Debug\STVR.lib" /MACHINE:X86 Debug\CameraMgr.obj
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\luisalejandro\documents\visual studio 2012\Projects\STVR\Debug\STVR.exe" /INCREMENTAL /NOLOGO iweardrv.lib iwrstdrv.lib Irrlicht.lib enet.lib Kinect10.lib OpenGL32.lib freeglut.lib glew32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\luisalejandro\documents\visual studio 2012\Projects\STVR\Debug\STVR.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\luisalejandro\documents\visual studio 2012\Projects\STVR\Debug\STVR.lib" /MACHINE:X86 Debug\CameraMgr.obj
          Debug\InputHMD.obj
          Debug\IrrlichtMgr.obj
          Debug\IWear_Tracking.obj
@@ -15,12 +19,12 @@
          Debug\ModelMgr.obj
          Debug\NetworkMgr.obj
          Debug\Standard.obj
-         STVR.vcxproj -> C:\Users\luisalejandro\Documents\Visual Studio 2012\Projects\STVR\Debug\STVR.exe
+         STVR.vcxproj -> C:\Users\luisalejandro\documents\visual studio 2012\Projects\STVR\Debug\STVR.exe
        FinalizeBuildStatus:
          Deleting file "Debug\STVR.unsuccessfulbuild".
          Touching "Debug\STVR.lastbuildstate".
-     1>Done Building Project "C:\Users\luisalejandro\Documents\Visual Studio 2012\Projects\STVR\STVR\STVR.vcxproj" (Build target(s)).
+     1>Done Building Project "C:\Users\luisalejandro\documents\visual studio 2012\Projects\STVR\STVR\STVR.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:02.37
+Time Elapsed 00:00:05.09

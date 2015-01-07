@@ -19,12 +19,27 @@
 /*                        Defines                               */
 /****************************************************************/
 
+#ifndef M_PI
+	#define M_PI 3.14159265358979323846f  /* As in Linux's math.h */
+#endif
+
+#ifndef DEGREE_TO_RAD
+	#define DEGREE_TO_RAD      (M_PI/180.0f)
+#endif
+
+#ifndef RAD_TO_DEGREE
+	#define RAD_TO_DEGREE      (180.0f/M_PI)
+#endif
+
 /****************************************************************/
 /*                        Include                               */
 /****************************************************************/
 
 //Haupt Bibliotheken von Irrlicht
 #include <irrlicht.h>
+#include <vector>
+#include "ModelMgr.h"
+
 #include "IWear_Tracking.h"		//Bibliothek zu Tracking
 
 /****************************************************************/
@@ -53,6 +68,13 @@ public:
 	vector3df CamPos;
 	vector3df ViewVector;
 
+	vector3df TotalCamPos;
+	vector3df TotalViewVector;
+
+	/***** For Cameras *****/
+	std::vector<int> TrackObj;					// List with the obects to follow
+	unsigned int CurrentObjCam;					// Current Object to follow
+
 	ICameraSceneNode* cameraRight;
 	ICameraSceneNode* cameraLeft;
 
@@ -63,10 +85,13 @@ public:
 	void ActiveCameraMaya();
 	void ActiveCameraFPS();
 
+	void followObj();
+
 private:
 	void setActiveCamera(scene::ICameraSceneNode* newActive);
 
 	//Propiedades
+public:
 	bool isActStereoCam()
 	{
 		return StereoCam;

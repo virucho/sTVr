@@ -39,11 +39,66 @@ Function InitScene() Init the Class and Load the Irrlicht Device
 bool SceneMgr::InitSceneMgr(IrrlichtDevice *irrDevice)
 {
 	Device = irrDevice;
+	Driver = irrDevice->getVideoDriver();
+	Smgr = irrDevice->getSceneManager();
+	Guienv = irrDevice->getGUIEnvironment();
 
 	Octree = false;
 
 	if(irrDevice == NULL)
 		return false;
+
+	SunPos = vector3df(200,200,200);
+	SunColor = SColorf(1.0f,1.0f,1.0f);
+
+	return true;
+}
+
+/*
+Function RenderScene() Render the scene
+*/
+bool SceneMgr::RenderScene()
+{
+	if(MgrCamera->isActStereoCam())
+	{
+		//Inicio la Escena a Renderizar
+		Driver->beginScene(true, true, SColor(255,255,255,255));
+		// draw camera
+		Smgr->drawAll();
+		Guienv->drawAll();
+
+		Driver->endScene();
+	}
+	else
+	{
+		// Left Eye
+		Driver->beginScene(true, true, SColor(255,255,255,255));
+		
+		// draw left camera
+		Smgr->setActiveCamera(MgrCamera->cameraLeft);
+		
+		Smgr->drawAll();		// Render Obj
+		Guienv->drawAll();		// Render GUI
+
+		Driver->endScene();
+
+		//Sync
+		MgrHMD->VRStereo->SynchronizeEye(IWRSTEREO_LEFT_EYE);
+
+		// Right Eye
+		Driver->beginScene(true, true, SColor(255,255,255,255));
+
+		// draw right camera
+		Smgr->setActiveCamera(MgrCamera->cameraRight);
+		
+		Smgr->drawAll();		// Render Obj
+		Guienv->drawAll();		// Render GUI
+
+		Driver->endScene();
+
+		MgrHMD->VRStereo->SynchronizeEye(IWRSTEREO_RIGHT_EYE);
+
+	}
 
 	return true;
 }
@@ -131,6 +186,13 @@ bool SceneMgr::loadModel(ObjeScene Object)
 	AuxModel.Mesh = m;
 	AuxModel.Object = Object;
 	AuxModel.Octree = false;
+
+	// Mejorar
+	if(extension == ".b3dz")
+		AuxModel.Traceable = true;
+	else
+		AuxModel.Traceable = false;
+
 	Models.push_back(AuxModel);
 
 	return true;
@@ -147,6 +209,9 @@ bool SceneMgr::UpdateModel(ObjeScene* Object)
 	{
 		if(Object->getIdName().compare(Models[x].Object.getIdName()) == 0)
 		{
+			if(Object->getIdName() == "beagle")
+				Models[x];
+
 			Models[x].Model->setPosition(Object->getPosition());
 			Models[x].Model->setRotation(Object->getRotation());
 			Models[x].Model->setScale(Object->getScale());
@@ -162,6 +227,8 @@ Function InitWorld() Create the World to render - Add the Model to the Scene
 bool SceneMgr::InitWorld()
 {
 	unsigned int x;
+
+	/**************** Models ****************/
 
 	for(x=0; x < Models.size(); x++)
 	{
@@ -190,6 +257,13 @@ bool SceneMgr::InitWorld()
 			Models[x].Model->setDebugDataVisible(scene::EDS_OFF);
 		}
 	}
+
+	/*************** Light **************/
+	//Smgr->addLightSceneNode(0, SunPos, SunColor,2000);
+	//Smgr->setAmbientLight(video::SColorf(0.3f,0.3f,0.3f));
+
+	/*************** for Cameras ************/
+	searchTrackObj();				// Busco los obj a seguir
 
 	return true;
 }
@@ -273,3 +347,32 @@ IAnimatedMesh* SceneMgr::getb3dzfile(const std::string &filename)
     return m;
 }
 
+/*
+Function searchTrackObj() search the traceable objects from the cam
+*/
+void SceneMgr::searchTrackObj()
+{
+	unsigned int x;
+
+	for(x = 0; x < Models.size(); x++)
+	{
+		if((Models[x].Traceable) && Models[x].Object.getinScene())
+			MgrCamera->TrackObj.push_back(x);
+	}
+}
+
+/*
+Function getModelPosition() return the position von the selected Model
+*/
+vector3df SceneMgr::getModelPosition(unsigned int Idx)
+{
+	return Models[Idx].Model->getPosition();
+}
+
+/*
+Function getModelDirection() return the vector Direction von the selected Model
+*/
+vector3df SceneMgr::getModelDirection(unsigned int Idx)
+{
+	return Models[Idx].Model->getRotation();
+}

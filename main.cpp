@@ -21,7 +21,7 @@
 #define USE_CONSOLE
 #define STVR_VERSION 0.50
 
-#define _DEFAULT_STEP_ 0.5f
+#define _DEFAULT_STEP_ 0.05f
 
 /****************************************************************/
 /*                        Include                               */
@@ -65,6 +65,13 @@ using namespace gui;
 		#pragma comment(linker, "/subsystem:windows /ENTRY:mainCRTStartup")
 	#endif
 #endif
+
+/****************************************************************/
+/*                       Global                                 */
+/****************************************************************/
+
+std::string serverAdd = "192.168.2.100";
+int  serverPort = 2305;
 
 /****************************************************************/
 /*                       Mis Clases                             */
@@ -160,6 +167,34 @@ void InitReset()
 	MgrHMD = new InputHMD(false, true);
 }
 
+void CmdLineInit(int argc, char** argv)
+{
+	std::string Dato;
+	size_t pos;
+
+	for(int i=1; i<argc; i++)
+    {
+		Dato.clear();
+		Dato.assign(argv[i]);
+
+		pos = Dato.find("--server");
+		if(pos != std::string::npos)
+		{
+			Dato.erase(pos, 9);
+			serverAdd = Dato;
+			continue;
+		}
+
+		pos = Dato.find("--port");
+		if(pos != std::string::npos)
+		{
+			Dato.erase(pos, 7);
+			serverPort = std::stoi(Dato);
+			continue;
+		}
+	}
+}
+
 /****************************************************************/
 /*                        Main                                  */
 /****************************************************************/
@@ -175,6 +210,9 @@ int main(int argc, char *argv[] )
 	fprintf(stderr, "Starting sTVr Version : %f\n\n", STVR_VERSION);
 	core::stringw strName = L"Streaming Virtual reality sTVr";
 
+	//Read Params
+	CmdLineInit(argc, argv);
+
 	InitReset();
 	
 	if(!irrMgr->InitIrrlicht(appReceiver))
@@ -184,7 +222,7 @@ int main(int argc, char *argv[] )
 		return false;
 
 	MgrNetwork->setState(NetworkManager::NS_CONNECTING);
-	if(!MgrNetwork->initClient("localhost", 2305))
+	if(!MgrNetwork->initClient(serverAdd.c_str(), serverPort))
 	{
 		fprintf(stderr, "Error with the connection to : %d", 2305);
 		irrMgr->irrDevice->drop();
@@ -199,11 +237,11 @@ int main(int argc, char *argv[] )
 	//Inicializo la Scena
 	MgrScene->InitSceneMgr(irrMgr->irrDevice);
 
+	//MgrNetwork->setState(NetworkManager::NS_WORLD_LOADING);
+
 	irrMgr->irrSmgr->addLightSceneNode(0, core::vector3df(200,200,200),
 		video::SColorf(1.0f,1.0f,1.0f),2000);
 	irrMgr->irrSmgr->setAmbientLight(video::SColorf(0.3f,0.3f,0.3f));
-
-	//MgrNetwork->setState(NetworkManager::NS_WORLD_LOADING);
 
 	/*ObjeScene Obj;
 	Obj.setModelName("farm_track.b3d");
@@ -214,6 +252,9 @@ int main(int argc, char *argv[] )
 	
 	//MgrScene->loadModel(Obj);
 	//MgrScene->InitWorld();
+
+	bool last1 = false;
+	bool Last2 = false;
 
 	while(irrMgr->irrDevice->run() && !irrExit)
 	//while(!irrExit)
@@ -239,6 +280,22 @@ int main(int argc, char *argv[] )
 			if(appReceiver->isKeyDown(KEY_KEY_W))
 				MgrHMD->VRTracker->setStereoSeparation(MgrHMD->VRTracker->getStereoSeparation() + SEPARATION_STEP);
 
+
+			if(last1 && !appReceiver->isKeyDown(KEY_KEY_1))
+				MgrCamera->CurrentObjCam--;
+
+			if(Last2 && !appReceiver->isKeyDown(KEY_KEY_2))
+				MgrCamera->CurrentObjCam++;
+
+			if(MgrCamera->CurrentObjCam >= MgrCamera->TrackObj.size())
+				MgrCamera->CurrentObjCam = 0;
+
+			if(MgrCamera->CurrentObjCam < 0)
+				MgrCamera->CurrentObjCam = MgrCamera->TrackObj.size() -1;
+
+			last1 = appReceiver->isKeyDown(KEY_KEY_1);
+			Last2 = appReceiver->isKeyDown(KEY_KEY_2);
+
 #ifdef _IWEAR_ACTIVED_
 
 			if(MgrHMD->isActTracking())
@@ -246,45 +303,25 @@ int main(int argc, char *argv[] )
 				//Update Tracking Sensor
 				MgrHMD->VRTracker->UpdateSensor();
 
-				MgrCamera->ViewVector = MgrHMD->VRTracker->CalViewVector(MgrHMD->VRTracker->getRadPitch(), MgrHMD->VRTracker->getRadYaw());
+				//MgrCamera->ViewVector = MgrHMD->VRTracker->CalViewVector(MgrHMD->VRTracker->getRadPitch(), MgrHMD->VRTracker->getRadYaw());
+				MgrCamera->ViewVector = vector3df(0.0f, -MgrHMD->VRTracker->getRadYaw(), MgrHMD->VRTracker->getRadPitch());
 
 				//Update Position stereo Camera
-				MgrHMD->VRTracker->CalcCameraVectors(MgrCamera->cameraLeft, MgrCamera->CamPos, MgrCamera->ViewVector, LEFT_EYE);
-				MgrHMD->VRTracker->CalcCameraVectors(MgrCamera->cameraRight, MgrCamera->CamPos, MgrCamera->ViewVector, RIGHT_EYE);
+				MgrHMD->VRTracker->CalcCameraVectors(MgrCamera->cameraLeft, MgrCamera->TotalCamPos, MgrCamera->TotalViewVector, LEFT_EYE);
+				MgrHMD->VRTracker->CalcCameraVectors(MgrCamera->cameraRight, MgrCamera->TotalCamPos, MgrCamera->TotalViewVector, RIGHT_EYE);
 			}
 
 #endif
+			
+			if(MgrNetwork->getState() == NetworkManager::NS_UPDATING)
+			{
+				/****************** UPDATE ***************/
+				MgrCamera->followObj();		// Search a Obj to follow in the scene
+				
+				/****************** RENDER ***************/
+				MgrScene->RenderScene();
+			}
 
-			/****************** RENDER ***************/
-
-			//Inicio la Escena a Renderizar
-			irrMgr->irrVDriver->beginScene(true, true, SColor(255,255,255,255));
-
-			// draw left camera
-			//irrMgr->irrSmgr->setActiveCamera(MgrCamera->cameraLeft);
-			irrMgr->irrGuienv->drawAll();
-			irrMgr->irrSmgr->drawAll();
-
-			irrMgr->irrVDriver->endScene();
-#ifdef _IWEAR_ACTIVED_
-
-	#ifdef _IWEAR_STEREO_
-			VRStereo->SynchronizeEye(IWRSTEREO_LEFT_EYE);
-
-			/************** ojo *******/
-
-			driver->beginScene(true, true, SColor(255,255,255,255));
-
-			// draw right camera
-			smgr->setActiveCamera(cameraRight);
-			smgr->drawAll();
-			guienv->drawAll();
-
-			driver->endScene();
-
-			VRStereo->SynchronizeEye(IWRSTEREO_RIGHT_EYE);
-	#endif
-#endif
 			fps = irrMgr->irrVDriver->getFPS();
 
 			if (lastFPS != fps)

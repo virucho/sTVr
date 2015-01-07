@@ -29,6 +29,9 @@
 
 #include "ObjectsMgr.h"
 #include "NetworkMgr.h"
+#include "CameraMgr.h"
+
+#include "inputHMD.h"
 
 /****************************************************************/
 /*                        Namespace                             */
@@ -40,6 +43,7 @@ using namespace core;			//Zusätzliche Namespace
 using namespace scene;
 using namespace video;
 using namespace io;
+using namespace gui;
 
 /****************************************************************/
 /*                       Class									*/
@@ -49,18 +53,25 @@ struct ModelinScene
 {
 	ISceneNode* Model;							// Node of the loaded Model
 	IAnimatedMesh* Mesh;						// Mesh of the loaded Model
-	ObjeScene Object;							// Data from oBject in scene
+	ObjeScene Object;							// Data from Object in scene
 	bool Octree;								// If the model use Octree or Not
+	bool Traceable;								// if the Camera should follow the Obj
 };
 
 class SceneMgr
 {
 private:
-	// Driver
+	// Device
 	IrrlichtDevice * Device;
+	IVideoDriver* Driver;						//Video Driver para trabajar
+	ISceneManager* Smgr;						//Manejador de Escena
+	IGUIEnvironment* Guienv;					//Manejador de GUI
 
+	/***** Wold *****/
 	// Models
 	std::vector<ModelinScene> Models;			// vector with all Models and characteristics
+	vector3df SunPos;							// Position of Light in the Scene
+	SColorf SunColor;							// Color of Light
 
 	// Files manager
 	std::string RootFolder;
@@ -73,17 +84,21 @@ private:
 
 public:
 	bool InitSceneMgr(IrrlichtDevice *irrDevice);
+	bool RenderScene();
 	bool Loadpredata();
 	bool InitWorld();
 	bool loadModel(ObjeScene Object);
 	bool LoadModelinScene(std::vector<std::string> models);
 	IAnimatedMesh* getb3dzfile(const std::string &filename);
 	bool UpdateModel(ObjeScene* Object);
+	void searchTrackObj();
 
 	//Propiedades
 	int getnumModels() {return Models.size();}
 	void setRootfolder(std::string folder)				{RootFolder = folder + "/";}
 	std::string getRootfolder()							{return RootFolder;}
+	vector3df getModelPosition(unsigned int Idx);
+	vector3df getModelDirection(unsigned int Idx);
 };
 
 /****************************************************************/

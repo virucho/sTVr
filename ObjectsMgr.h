@@ -19,6 +19,18 @@
 /*                        Defines                               */
 /****************************************************************/
 
+#ifndef M_PI
+	#define M_PI 3.14159265358979323846f  /* As in Linux's math.h */
+#endif
+
+#ifndef DEGREE_TO_RAD
+	#define DEGREE_TO_RAD      (M_PI/180.0f)
+#endif
+
+#ifndef RAD_TO_DEGREE
+	#define RAD_TO_DEGREE      (180.0f/M_PI)
+#endif
+
 /****************************************************************/
 /*                        Include                               */
 /****************************************************************/
@@ -100,6 +112,15 @@ public:
 		ObjPosition = Position;
 		ObjRotation = Rotation;
 		ObjScale = Scale;
+	};
+
+	static vector3df ConvertToDeg(vector3df Rotation)
+	{
+		float x = RAD_TO_DEGREE * Rotation.X;
+		float y = RAD_TO_DEGREE * Rotation.Y;
+		float z = RAD_TO_DEGREE * Rotation.Z;
+
+		return vector3df(x, y, z);
 	};
 };
 
